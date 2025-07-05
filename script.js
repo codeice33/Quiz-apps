@@ -10,13 +10,13 @@ const questions =[
         ]
     },
     {
-        question: "which is largest animal in the world?" ,
+        question: "what is my roommate name?" ,
         answers: [
 
-             {text: "Shark", correct: false},
-             {text: "Blue-whale", correct: true},
-            { text: "Elephant", correct: false},
-            { text: "Giraffe", correct: false},
+             {text: "Eze Nelly", correct: true},
+             {text: "Yung", correct: false},
+            { text: "Brian", correct: false},
+            { text: "Kenneth", correct: false},
         ]
     },
     {
