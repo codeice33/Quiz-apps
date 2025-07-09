@@ -1,3 +1,25 @@
+// Prevent cheating: Restart or end quiz if user leaves the browser tab
+let quizEndedForCheating = false;
+
+function handleCheating() {
+    if (!quizEndedForCheating) {
+        quizEndedForCheating = true;
+        // Option 1: End the quiz and show a message
+        resetState();
+        questionElement.innerHTML = 'Quiz ended: You left the browser tab.';
+        nextButton.style.display = 'none';
+        claimRewardButton.style.display = 'none';
+        payoutForm.style.display = 'none';
+        // Optionally, reload to restart: location.reload();
+    }
+}
+
+window.addEventListener('blur', handleCheating);
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+        handleCheating();
+    }
+});
 const questions =[
     {
         question: "Which is the largest animal in the world?",
