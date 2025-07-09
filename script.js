@@ -495,41 +495,17 @@ claimRewardButton.addEventListener("click", () => {
 submitPayoutBtn.addEventListener("click", () => {
     const name = payoutName.value.trim();
     const account_number = payoutAccount.value.trim();
-    const bank_code = payoutBank.value.trim();
+     const bank_name = payoutBank.value.trim() || payoutBank.options[payoutBank.selectedIndex].text;
     const email = payoutEmail.value.trim();
-    if(!name || !account_number || !bank_code || !email) {
+    if(!name || !account_number || !bank_name || !email) {
         alert("Please fill in all payout details.");
         return;
     }
-    submitPayoutBtn.disabled = true;
-    submitPayoutBtn.innerText = "Processing...";
-    fetch('http://localhost:4000/claim-reward', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, account_number, bank_code, email, amount: 100 })
-    })
-    .then(async res => {
-        let data;
-        try {
-            data = await res.json();
-        } catch (e) {
-            data = {};
-        }
-        if(res.ok && data.success) {
-            alert(data.message || "Reward claimed!");
-            payoutForm.style.display = "none";
-            claimingReward = false;
-        } else {
-            alert((data && data.message) || "There was an error claiming your reward. Please try again.");
-        }
-        submitPayoutBtn.disabled = false;
-        submitPayoutBtn.innerText = "Submit for Payment";
-    })
-    .catch(() => {
-        alert("There was an error claiming your reward. Please try again.");
-        submitPayoutBtn.disabled = false;
-        submitPayoutBtn.innerText = "Submit for Payment";
-    });
+    // Manual payout: show details for admin to process manually
+    const payoutDetails = `\nFull Name: ${name}\nAccount Number: ${account_number}\nBank: ${bank_name}\nEmail: ${email}`;
+    alert("Manual payout request submitted! Please process this payment manually.\n" + payoutDetails);
+    payoutForm.style.display = "none";
+    claimingReward = false;
 });
 
 startQuiz();
