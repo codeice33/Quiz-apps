@@ -18,7 +18,30 @@
         <div id="payout-form" style="display:none; margin-top:20px;">
             <input type="text" id="payout-name" placeholder="Full Name" required style="margin-bottom:5px;" />
             <input type="text" id="payout-account" placeholder="Account Number" required style="margin-bottom:5px;" />
-            <input type="text" id="payout-bank" placeholder="Bank Name (e.g. GTBank)" required style="margin-bottom:5px;" />
+            <select id="payout-bank" required style="margin-bottom:5px;">
+                <option value="">Select Bank</option>
+                <option value="Access Bank">Access Bank</option>
+                <option value="Citibank">Citibank</option>
+                <option value="Ecobank">Ecobank</option>
+                <option value="Fidelity Bank">Fidelity Bank</option>
+                <option value="First Bank">First Bank</option>
+                <option value="First City Monument Bank">First City Monument Bank (FCMB)</option>
+                <option value="Globus Bank">Globus Bank</option>
+                <option value="Guaranty Trust Bank">Guaranty Trust Bank (GTBank)</option>
+                <option value="Heritage Bank">Heritage Bank</option>
+                <option value="Keystone Bank">Keystone Bank</option>
+                <option value="Polaris Bank">Polaris Bank</option>
+                <option value="Providus Bank">Providus Bank</option>
+                <option value="Stanbic IBTC Bank">Stanbic IBTC Bank</option>
+                <option value="Standard Chartered Bank">Standard Chartered Bank</option>
+                <option value="Sterling Bank">Sterling Bank</option>
+                <option value="Suntrust Bank">Suntrust Bank</option>
+                <option value="Union Bank">Union Bank</option>
+                <option value="United Bank for Africa">United Bank for Africa (UBA)</option>
+                <option value="Unity Bank">Unity Bank</option>
+                <option value="Wema Bank">Wema Bank</option>
+                <option value="Zenith Bank">Zenith Bank</option>
+            </select>
             <input type="email" id="payout-email" placeholder="Email" required style="margin-bottom:5px;" />
             <button id="submit-payout-btn" style="background:#28a745;color:#fff;padding:8px 16px;border:none;border-radius:4px;">Submit for Payment</button>
         </div>
