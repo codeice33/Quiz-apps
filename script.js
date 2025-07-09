@@ -1,52 +1,308 @@
 const questions =[
     {
-        question: "which is largest animal in the world?" ,
+        question: "Which is the largest animal in the world?",
         answers: [
-
-            { text: "Shark", correct: false},
-            { text: "Blue-whale", correct: true},
-            { text: "Elephant", correct: false},
-            { text: "Giraffe", correct: false},
+            { text: "Shark", correct: false },
+            { text: "Blue whale", correct: true },
+            { text: "Elephant", correct: false },
+            { text: "Giraffe", correct: false },
         ]
     },
     {
-        question: "what is my roommate name?" ,
+        question: "What is the capital of France?",
         answers: [
-
-             {text: "Eze Nelly", correct: true},
-             {text: "Yung", correct: false},
-             { text: "Brian", correct: false},
-             { text: "Kenneth", correct: false},
+            { text: "Berlin", correct: false },
+            { text: "Madrid", correct: false },
+            { text: "Paris", correct: true },
+            { text: "Lisbon", correct: false },
         ]
     },
     {
- question: "what is my roommate name?" ,
+        question: "Which planet is known as the Red Planet?",
         answers: [
-
-             {text: "Eze Nelly", correct: true},
-             {text: "Yung", correct: false},
-             { text: "Brian", correct: false},
-             { text: "Kenneth", correct: false},
+            { text: "Earth", correct: false },
+            { text: "Mars", correct: true },
+            { text: "Jupiter", correct: false },
+            { text: "Saturn", correct: false },
         ]
     },
     {
-        question: "which is largest animal in the world?" ,
+        question: "Who wrote 'Romeo and Juliet'?",
         answers: [
-
-            { text: "Shark", correct: false},
-            { text: "Blue-whale", correct: true},
-            { text: "Elephant", correct: false},
-            { text: "Giraffe", correct: false},
+            { text: "William Shakespeare", correct: true },
+            { text: "Charles Dickens", correct: false },
+            { text: "Jane Austen", correct: false },
+            { text: "Mark Twain", correct: false },
         ]
     },
     {
-        question: "which is largest animal in the world?" ,
+        question: "What is the largest continent?",
         answers: [
-
-            { text: "Shark", correct: false},
-            { text: "Blue-whale", correct: true},
-            { text: "Elephant", correct: false},
-            { text: "Giraffe", correct: false},
+            { text: "Africa", correct: false },
+            { text: "Asia", correct: true },
+            { text: "Europe", correct: false },
+            { text: "Antarctica", correct: false },
+        ]
+    },
+    {
+        question: "Which gas do plants absorb from the atmosphere?",
+        answers: [
+            { text: "Oxygen", correct: false },
+            { text: "Carbon Dioxide", correct: true },
+            { text: "Nitrogen", correct: false },
+            { text: "Hydrogen", correct: false },
+        ]
+    },
+    {
+        question: "Who painted the Mona Lisa?",
+        answers: [
+            { text: "Vincent Van Gogh", correct: false },
+            { text: "Leonardo da Vinci", correct: true },
+            { text: "Pablo Picasso", correct: false },
+            { text: "Claude Monet", correct: false },
+        ]
+    },
+    {
+        question: "What is the boiling point of water?",
+        answers: [
+            { text: "90°C", correct: false },
+            { text: "100°C", correct: true },
+            { text: "80°C", correct: false },
+            { text: "120°C", correct: false },
+        ]
+    },
+    {
+        question: "Which language is used to style web pages?",
+        answers: [
+            { text: "HTML", correct: false },
+            { text: "CSS", correct: true },
+            { text: "Python", correct: false },
+            { text: "Java", correct: false },
+        ]
+    },
+    {
+        question: "What is the hardest natural substance?",
+        answers: [
+            { text: "Gold", correct: false },
+            { text: "Iron", correct: false },
+            { text: "Diamond", correct: true },
+            { text: "Silver", correct: false },
+        ]
+    },
+    {
+        question: "What is the smallest prime number?",
+        answers: [
+            { text: "1", correct: false },
+            { text: "2", correct: true },
+            { text: "3", correct: false },
+            { text: "5", correct: false },
+        ]
+    },
+    {
+        question: "Which country is known as the Land of the Rising Sun?",
+        answers: [
+            { text: "China", correct: false },
+            { text: "Japan", correct: true },
+            { text: "Thailand", correct: false },
+            { text: "India", correct: false },
+        ]
+    },
+    {
+        question: "Who discovered gravity?",
+        answers: [
+            { text: "Albert Einstein", correct: false },
+            { text: "Isaac Newton", correct: true },
+            { text: "Galileo Galilei", correct: false },
+            { text: "Nikola Tesla", correct: false },
+        ]
+    },
+    {
+        question: "What is the main ingredient in guacamole?",
+        answers: [
+            { text: "Tomato", correct: false },
+            { text: "Avocado", correct: true },
+            { text: "Onion", correct: false },
+            { text: "Pepper", correct: false },
+        ]
+    },
+    {
+        question: "Which ocean is the largest?",
+        answers: [
+            { text: "Atlantic", correct: false },
+            { text: "Pacific", correct: true },
+            { text: "Indian", correct: false },
+            { text: "Arctic", correct: false },
+        ]
+    },
+    {
+        question: "What is the chemical symbol for gold?",
+        answers: [
+            { text: "Au", correct: true },
+            { text: "Ag", correct: false },
+            { text: "Gd", correct: false },
+            { text: "Go", correct: false },
+        ]
+    },
+    {
+        question: "Who is known as the Father of Computers?",
+        answers: [
+            { text: "Charles Babbage", correct: true },
+            { text: "Alan Turing", correct: false },
+            { text: "Bill Gates", correct: false },
+            { text: "Steve Jobs", correct: false },
+        ]
+    },
+    {
+        question: "Which country gifted the Statue of Liberty to the USA?",
+        answers: [
+            { text: "England", correct: false },
+            { text: "France", correct: true },
+            { text: "Germany", correct: false },
+            { text: "Spain", correct: false },
+        ]
+    },
+    {
+        question: "What is the largest desert in the world?",
+        answers: [
+            { text: "Sahara", correct: false },
+            { text: "Antarctic", correct: true },
+            { text: "Gobi", correct: false },
+            { text: "Kalahari", correct: false },
+        ]
+    },
+    {
+        question: "Which instrument measures atmospheric pressure?",
+        answers: [
+            { text: "Thermometer", correct: false },
+            { text: "Barometer", correct: true },
+            { text: "Hygrometer", correct: false },
+            { text: "Anemometer", correct: false },
+        ]
+    },
+    {
+        question: "Who invented the telephone?",
+        answers: [
+            { text: "Alexander Graham Bell", correct: true },
+            { text: "Thomas Edison", correct: false },
+            { text: "Nikola Tesla", correct: false },
+            { text: "Guglielmo Marconi", correct: false },
+        ]
+    },
+    {
+        question: "What is the capital of Australia?",
+        answers: [
+            { text: "Sydney", correct: false },
+            { text: "Melbourne", correct: false },
+            { text: "Canberra", correct: true },
+            { text: "Perth", correct: false },
+        ]
+    },
+    {
+        question: "Which is the longest river in the world?",
+        answers: [
+            { text: "Amazon", correct: false },
+            { text: "Nile", correct: true },
+            { text: "Yangtze", correct: false },
+            { text: "Mississippi", correct: false },
+        ]
+    },
+    {
+        question: "What is the square root of 64?",
+        answers: [
+            { text: "6", correct: false },
+            { text: "8", correct: true },
+            { text: "7", correct: false },
+            { text: "9", correct: false },
+        ]
+    },
+    {
+        question: "Which element has the atomic number 1?",
+        answers: [
+            { text: "Oxygen", correct: false },
+            { text: "Hydrogen", correct: true },
+            { text: "Helium", correct: false },
+            { text: "Carbon", correct: false },
+        ]
+    },
+    {
+        question: "Who was the first President of the United States?",
+        answers: [
+            { text: "Abraham Lincoln", correct: false },
+            { text: "George Washington", correct: true },
+            { text: "Thomas Jefferson", correct: false },
+            { text: "John Adams", correct: false },
+        ]
+    },
+    {
+        question: "Which is the largest internal organ in the human body?",
+        answers: [
+            { text: "Heart", correct: false },
+            { text: "Liver", correct: true },
+            { text: "Lung", correct: false },
+            { text: "Kidney", correct: false },
+        ]
+    },
+    {
+        question: "What is the main language spoken in Brazil?",
+        answers: [
+            { text: "Spanish", correct: false },
+            { text: "Portuguese", correct: true },
+            { text: "French", correct: false },
+            { text: "English", correct: false },
+        ]
+    },
+    {
+        question: "Which year did World War II end?",
+        answers: [
+            { text: "1945", correct: true },
+            { text: "1939", correct: false },
+            { text: "1942", correct: false },
+            { text: "1950", correct: false },
+        ]
+    },
+    {
+        question: "What is the freezing point of water?",
+        answers: [
+            { text: "0°C", correct: true },
+            { text: "32°C", correct: false },
+            { text: "-10°C", correct: false },
+            { text: "100°C", correct: false },
+        ]
+    },
+    {
+        question: "Which country hosted the 2016 Summer Olympics?",
+        answers: [
+            { text: "China", correct: false },
+            { text: "Brazil", correct: true },
+            { text: "UK", correct: false },
+            { text: "Russia", correct: false },
+        ]
+    },
+    {
+        question: "What is the tallest mountain in the world?",
+        answers: [
+            { text: "K2", correct: false },
+            { text: "Mount Everest", correct: true },
+            { text: "Kangchenjunga", correct: false },
+            { text: "Lhotse", correct: false },
+        ]
+    },
+    {
+        question: "Which is the smallest continent?",
+        answers: [
+            { text: "Europe", correct: false },
+            { text: "Australia", correct: true },
+            { text: "Antarctica", correct: false },
+            { text: "South America", correct: false },
+        ]
+    },
+    {
+        question: "Who is the author of 'Harry Potter'?",
+        answers: [
+            { text: "J.K. Rowling", correct: true },
+            { text: "J.R.R. Tolkien", correct: false },
+            { text: "Stephen King", correct: false },
+            { text: "Roald Dahl", correct: false },
         ]
     }
 ];
