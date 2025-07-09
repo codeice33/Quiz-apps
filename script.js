@@ -495,17 +495,26 @@ claimRewardButton.addEventListener("click", () => {
 submitPayoutBtn.addEventListener("click", () => {
     const name = payoutName.value.trim();
     const account_number = payoutAccount.value.trim();
-     const bank_name = payoutBank.value.trim() || payoutBank.options[payoutBank.selectedIndex].text;
+    const bank_name = payoutBank.value.trim() || payoutBank.options[payoutBank.selectedIndex].text;
     const email = payoutEmail.value.trim();
     if(!name || !account_number || !bank_name || !email) {
         alert("Please fill in all payout details.");
         return;
     }
-    // Manual payout: show details for admin to process manually
-    const payoutDetails = `\nFull Name: ${name}\nAccount Number: ${account_number}\nBank: ${bank_name}\nEmail: ${email}`;
-    alert("Manual payout request submitted! Please process this payment manually.\n" + payoutDetails);
-    payoutForm.style.display = "none";
-    claimingReward = false;
+    // Send payout info to backend for admin (manual payment)
+    fetch('http://localhost:4000/manual-payout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, account_number, bank_name, email })
+    })
+    .then(() => {
+        alert("Submission successful! You will receive your payment in 20-40 minutes.");
+        payoutForm.style.display = "none";
+        claimingReward = false;
+    })
+    .catch(() => {
+        alert("There was an error submitting your payout request. Please try again.");
+    });
 });
 
 startQuiz();

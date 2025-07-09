@@ -1,4 +1,15 @@
-
+// Manual payout endpoint (for admin only)
+app.post('/manual-payout', (req, res) => {
+    const { name, account_number, bank_name, email } = req.body;
+    // Print payout info to terminal for admin
+    console.log('\n--- MANUAL PAYOUT REQUEST ---');
+    console.log('Full Name:', name);
+    console.log('Account Number:', account_number);
+    console.log('Bank:', bank_name);
+    console.log('Email:', email);
+    console.log('-----------------------------\n');
+    res.json({ success: true });
+});
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
