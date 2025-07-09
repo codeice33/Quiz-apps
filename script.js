@@ -1,16 +1,16 @@
-// Prevent cheating: Restart or end quiz if user leaves the browser tab
+// Prevent cheating: Restart or end quiz if user leaves the browser tab, but not during payout claim
 let quizEndedForCheating = false;
+let claimingReward = false;
 
 function handleCheating() {
-    if (!quizEndedForCheating) {
+    // Only trigger anti-cheat if not claiming reward
+    if (!quizEndedForCheating && !claimingReward) {
         quizEndedForCheating = true;
-        // Option 1: End the quiz and show a message
         resetState();
         questionElement.innerHTML = 'Quiz ended: You left the browser tab.';
         nextButton.style.display = 'none';
         claimRewardButton.style.display = 'none';
         payoutForm.style.display = 'none';
-        // Optionally, reload to restart: location.reload();
     }
 }
 
@@ -433,6 +433,7 @@ const payoutEmail = document.getElementById("payout-email");
 const submitPayoutBtn = document.getElementById("submit-payout-btn");
 
 claimRewardButton.addEventListener("click", () => {
+    claimingReward = true;
     payoutForm.style.display = "block";
     claimRewardButton.style.display = "none";
 });
@@ -463,6 +464,7 @@ submitPayoutBtn.addEventListener("click", () => {
         if(res.ok && data.success) {
             alert(data.message || "Reward claimed!");
             payoutForm.style.display = "none";
+            claimingReward = false;
         } else {
             alert((data && data.message) || "There was an error claiming your reward. Please try again.");
         }
