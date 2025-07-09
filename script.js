@@ -20,7 +20,15 @@ document.addEventListener('visibilitychange', function() {
         handleCheating();
     }
 });
-const questions =[
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+let questions =[
     {
         question: "Which is the largest animal in the world?",
         answers: [
@@ -352,6 +360,11 @@ function startQuiz(){
     currentQuestionIndex = 0;
     score = 0;
     nextButton.innerHTML = "Next";
+    // Shuffle questions and answers
+    questions = shuffleArray(questions);
+    questions.forEach(q => {
+        q.answers = shuffleArray(q.answers);
+    });
     showQuestion();
 }
 
