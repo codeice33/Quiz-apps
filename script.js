@@ -15,8 +15,18 @@ const questions =[
 
              {text: "Eze Nelly", correct: true},
              {text: "Yung", correct: false},
-            { text: "Brian", correct: false},
-            { text: "Kenneth", correct: false},
+             { text: "Brian", correct: false},
+             { text: "Kenneth", correct: false},
+        ]
+    },
+    {
+ question: "what is my roommate name?" ,
+        answers: [
+
+             {text: "Eze Nelly", correct: true},
+             {text: "Yung", correct: false},
+             { text: "Brian", correct: false},
+             { text: "Kenneth", correct: false},
         ]
     },
     {
