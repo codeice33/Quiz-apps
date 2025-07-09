@@ -334,6 +334,17 @@ const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
 const claimRewardButton = document.getElementById("claim-reward-btn");
 
+// Timer elements
+let timerInterval = null;
+let timerTimeout = null;
+let timerElement = document.getElementById('timer');
+if (!timerElement) {
+    timerElement = document.createElement('div');
+    timerElement.id = 'timer';
+    timerElement.style.cssText = 'font-size:18px;font-weight:600;margin-bottom:10px;color:#d9534f;';
+    questionElement.parentNode.insertBefore(timerElement, questionElement);
+}
+
 let currentQuestionIndex = 0;
 let score = 0;
 
@@ -347,9 +358,36 @@ function startQuiz(){
 function showQuestion(){
     resetState();
     let currentQuestion = questions[currentQuestionIndex];
-    let questionNo = currentQuestionIndex +1;
-    questionElement.innerHTML = questionNo + ". " + currentQuestion.
-    question;
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+
+    // Timer logic: 5 seconds per question
+    let timeLeft = 5;
+    timerElement.textContent = `Time left: ${timeLeft}s`;
+    clearInterval(timerInterval);
+    clearTimeout(timerTimeout);
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        timerElement.textContent = `Time left: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+        }
+    }, 1000);
+    timerTimeout = setTimeout(() => {
+        timerElement.textContent = 'Time up!';
+        // Mark as failed, show correct answer, move to next
+        Array.from(answerButtons.children).forEach(button => {
+            if(button.dataset && button.dataset.correct === "true"){
+                button.classList.add("correct");
+            }
+            button.disabled = true;
+        });
+        // Move to next after 1s
+        setTimeout(() => {
+            nextButton.style.display = "block";
+            handelNextButton();
+        }, 1000);
+    }, 5000);
 
     currentQuestion.answers.forEach(answer => {
         const button = document.createElement("button");
@@ -368,26 +406,29 @@ function resetState(){
     while(answerButtons.firstChild){
         answerButtons.removeChild(answerButtons.firstChild);
     }
+    timerElement.textContent = '';
+    clearInterval(timerInterval);
+    clearTimeout(timerTimeout);
 }
 
 function selectAnswer(e){
+    clearInterval(timerInterval);
+    clearTimeout(timerTimeout);
     const selectedBtn = e.target;
     const iscorrect = selectedBtn.dataset.correct === "true";
     if(iscorrect){
         selectedBtn.classList.add("correct");
         score++;
-      }else{
-            selectedBtn.classList.add("incorrect");
+    }else{
+        selectedBtn.classList.add("incorrect");
+    }
+    Array.from(answerButtons.children).forEach(button => {
+        if(button.dataset.correct === "true"){
+            button.classList.add("correct");
         }
-        Array.from(answerButtons.children).forEach(button => {
-            if(button.dataset.correct === "true"){
-                button.classList.add("correct");
-            }
-            button.disabled = true;
-
-        });
-        nextButton.style.display = "block"
-    
+        button.disabled = true;
+    });
+    nextButton.style.display = "block"
 }
 
 function showscore(){
