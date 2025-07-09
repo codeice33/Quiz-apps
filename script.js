@@ -472,6 +472,8 @@ nextButton.addEventListener("click" , ()=>{
     if(currentQuestionIndex < questions.length){
         handelNextButton();
     }else{
+        payoutForm.style.display = "none";
+        claimingReward = false;
         startQuiz();
     }
 });
@@ -501,16 +503,27 @@ submitPayoutBtn.addEventListener("click", () => {
         alert("Please fill in all payout details.");
         return;
     }
-    // Send payout info to backend for admin (manual payment)
-    fetch('http://localhost:4000/manual-payout', {
+    // IMPORTANT: Set this to your backend's deployed URL (not your frontend domain)
+    const ONLINE_BACKEND = 'https://your-backend-url.com'; // <-- CHANGE THIS after deploying backend
+    let apiUrl;
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        apiUrl = 'http://192.168.1.10:4000/manual-payout';
+    } else {
+        apiUrl = ONLINE_BACKEND + '/manual-payout';
+    }
+    fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, account_number, bank_name, email })
     })
-    .then(() => {
-        alert("Submission successful! You will receive your payment in 20-40 minutes.");
-        payoutForm.style.display = "none";
-        claimingReward = false;
+    .then((res) => {
+        if (res.ok) {
+            alert("Submission successful! You will receive your payment in 20-40 minutes.");
+            payoutForm.style.display = "none";
+            claimingReward = false;
+        } else {
+            throw new Error('Network response was not ok');
+        }
     })
     .catch(() => {
         alert("There was an error submitting your payout request. Please try again.");
