@@ -310,6 +310,7 @@ const questions =[
 const questionElement = document.getElementById("question");
 const answerButtons = document.getElementById("answer-buttons");
 const nextButton = document.getElementById("next-btn");
+const claimRewardButton = document.getElementById("claim-reward-btn");
 
 let currentQuestionIndex = 0;
 let score = 0;
@@ -372,6 +373,11 @@ function showscore(){
     questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
     nextButton.innerHTML = "Play Again";
     nextButton.style.display = "block";
+    if(score === 34 && questions.length === 34){
+        claimRewardButton.style.display = "block";
+    } else {
+        claimRewardButton.style.display = "none";
+    }
 }
 
 function handelNextButton(){
@@ -392,6 +398,60 @@ nextButton.addEventListener("click" , ()=>{
     }else{
         startQuiz();
     }
+});
+
+
+
+
+const payoutForm = document.getElementById("payout-form");
+const payoutName = document.getElementById("payout-name");
+const payoutAccount = document.getElementById("payout-account");
+const payoutBank = document.getElementById("payout-bank");
+const payoutEmail = document.getElementById("payout-email");
+const submitPayoutBtn = document.getElementById("submit-payout-btn");
+
+claimRewardButton.addEventListener("click", () => {
+    payoutForm.style.display = "block";
+    claimRewardButton.style.display = "none";
+});
+
+submitPayoutBtn.addEventListener("click", () => {
+    const name = payoutName.value.trim();
+    const account_number = payoutAccount.value.trim();
+    const bank_code = payoutBank.value.trim();
+    const email = payoutEmail.value.trim();
+    if(!name || !account_number || !bank_code || !email) {
+        alert("Please fill in all payout details.");
+        return;
+    }
+    submitPayoutBtn.disabled = true;
+    submitPayoutBtn.innerText = "Processing...";
+    fetch('http://localhost:4000/claim-reward', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, account_number, bank_code, email, amount: 100 })
+    })
+    .then(async res => {
+        let data;
+        try {
+            data = await res.json();
+        } catch (e) {
+            data = {};
+        }
+        if(res.ok && data.success) {
+            alert(data.message || "Reward claimed!");
+            payoutForm.style.display = "none";
+        } else {
+            alert((data && data.message) || "There was an error claiming your reward. Please try again.");
+        }
+        submitPayoutBtn.disabled = false;
+        submitPayoutBtn.innerText = "Submit for Payment";
+    })
+    .catch(() => {
+        alert("There was an error claiming your reward. Please try again.");
+        submitPayoutBtn.disabled = false;
+        submitPayoutBtn.innerText = "Submit for Payment";
+    });
 });
 
 startQuiz();
