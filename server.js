@@ -1,3 +1,15 @@
+
+const express = require('express');
+const cors = require('cors');
+const axios = require('axios');
+require('dotenv').config();
+
+const app = express();
+const PORT = 4000;
+
+app.use(cors());
+app.use(express.json());
+
 // Manual payout endpoint (for admin only)
 app.post('/manual-payout', (req, res) => {
     const { name, account_number, bank_name, email } = req.body;
@@ -10,13 +22,6 @@ app.post('/manual-payout', (req, res) => {
     console.log('-----------------------------\n');
     res.json({ success: true });
 });
-const express = require('express');
-const cors = require('cors');
-const axios = require('axios');
-require('dotenv').config();
-
-const app = express();
-const PORT = 4000;
 
 // Debug: Print Paystack secret key (first 6 chars only for security)
 console.log('Paystack Key:', process.env.PAYSTACK_SECRET_KEY ? process.env.PAYSTACK_SECRET_KEY.slice(0, 6) + '...' : 'NOT SET');
