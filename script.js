@@ -334,6 +334,178 @@ let questions =[
             { text: "Stephen King", correct: false },
             { text: "Roald Dahl", correct: false },
         ]
+    },
+    // --- Added questions to make 50 ---
+    {
+        question: "What is the capital of Canada?",
+        answers: [
+            { text: "Toronto", correct: false },
+            { text: "Ottawa", correct: true },
+            { text: "Vancouver", correct: false },
+            { text: "Montreal", correct: false },
+        ]
+    },
+    {
+        question: "Which metal is liquid at room temperature?",
+        answers: [
+            { text: "Mercury", correct: true },
+            { text: "Gold", correct: false },
+            { text: "Silver", correct: false },
+            { text: "Copper", correct: false },
+        ]
+    },
+    {
+        question: "What is the largest planet in our solar system?",
+        answers: [
+            { text: "Earth", correct: false },
+            { text: "Jupiter", correct: true },
+            { text: "Saturn", correct: false },
+            { text: "Mars", correct: false },
+        ]
+    },
+    {
+        question: "Who painted the ceiling of the Sistine Chapel?",
+        answers: [
+            { text: "Michelangelo", correct: true },
+            { text: "Da Vinci", correct: false },
+            { text: "Raphael", correct: false },
+            { text: "Donatello", correct: false },
+        ]
+    },
+    {
+        question: "Which country is known as the Land of a Thousand Lakes?",
+        answers: [
+            { text: "Finland", correct: true },
+            { text: "Sweden", correct: false },
+            { text: "Norway", correct: false },
+            { text: "Denmark", correct: false },
+        ]
+    },
+    {
+        question: "What is the chemical symbol for sodium?",
+        answers: [
+            { text: "Na", correct: true },
+            { text: "So", correct: false },
+            { text: "S", correct: false },
+            { text: "N", correct: false },
+        ]
+    },
+    {
+        question: "Who is the Greek god of the sea?",
+        answers: [
+            { text: "Poseidon", correct: true },
+            { text: "Zeus", correct: false },
+            { text: "Apollo", correct: false },
+            { text: "Hermes", correct: false },
+        ]
+    },
+    {
+        question: "Which country invented paper?",
+        answers: [
+            { text: "China", correct: true },
+            { text: "Egypt", correct: false },
+            { text: "Greece", correct: false },
+            { text: "India", correct: false },
+        ]
+    },
+    {
+        question: "What is the main ingredient in traditional Japanese miso soup?",
+        answers: [
+            { text: "Miso paste", correct: true },
+            { text: "Soy sauce", correct: false },
+            { text: "Rice", correct: false },
+            { text: "Seaweed", correct: false },
+        ]
+    },
+    {
+        question: "Which is the smallest bone in the human body?",
+        answers: [
+            { text: "Stapes", correct: true },
+            { text: "Femur", correct: false },
+            { text: "Tibia", correct: false },
+            { text: "Ulna", correct: false },
+        ]
+    },
+    {
+        question: "What is the national flower of Japan?",
+        answers: [
+            { text: "Cherry Blossom", correct: true },
+            { text: "Rose", correct: false },
+            { text: "Lily", correct: false },
+            { text: "Lotus", correct: false },
+        ]
+    },
+    {
+        question: "Which element is needed for strong bones and teeth?",
+        answers: [
+            { text: "Calcium", correct: true },
+            { text: "Iron", correct: false },
+            { text: "Potassium", correct: false },
+            { text: "Magnesium", correct: false },
+        ]
+    },
+    {
+        question: "Who was the first man to step on the moon?",
+        answers: [
+            { text: "Neil Armstrong", correct: true },
+            { text: "Buzz Aldrin", correct: false },
+            { text: "Yuri Gagarin", correct: false },
+            { text: "Michael Collins", correct: false },
+        ]
+    },
+    {
+        question: "Which country is the origin of the car brand 'Toyota'?",
+        answers: [
+            { text: "Japan", correct: true },
+            { text: "USA", correct: false },
+            { text: "Germany", correct: false },
+            { text: "South Korea", correct: false },
+        ]
+    },
+    {
+        question: "What is the largest mammal on land?",
+        answers: [
+            { text: "Elephant", correct: true },
+            { text: "Giraffe", correct: false },
+            { text: "Hippopotamus", correct: false },
+            { text: "Rhinoceros", correct: false },
+        ]
+    },
+    {
+        question: "Which is the longest bone in the human body?",
+        answers: [
+            { text: "Femur", correct: true },
+            { text: "Tibia", correct: false },
+            { text: "Fibula", correct: false },
+            { text: "Humerus", correct: false },
+        ]
+    },
+    {
+        question: "What is the capital city of Kenya?",
+        answers: [
+            { text: "Nairobi", correct: true },
+            { text: "Mombasa", correct: false },
+            { text: "Kampala", correct: false },
+            { text: "Addis Ababa", correct: false },
+        ]
+    },
+    {
+        question: "Which gas do humans need to breathe?",
+        answers: [
+            { text: "Oxygen", correct: true },
+            { text: "Carbon Dioxide", correct: false },
+            { text: "Nitrogen", correct: false },
+            { text: "Hydrogen", correct: false },
+        ]
+    },
+    {
+        question: "What is the largest island in the world?",
+        answers: [
+            { text: "Greenland", correct: true },
+            { text: "Australia", correct: false },
+            { text: "Borneo", correct: false },
+            { text: "Madagascar", correct: false },
+        ]
     }
 ];
 
@@ -375,7 +547,7 @@ function showQuestion(){
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
 
     // Timer logic: 5 seconds per question
-    let timeLeft = 5;
+    let timeLeft = 7;
     timerElement.textContent = `Time left: ${timeLeft}s`;
     clearInterval(timerInterval);
     clearTimeout(timerTimeout);
@@ -449,7 +621,7 @@ function showscore(){
     questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
     nextButton.innerHTML = "Play Again";
     nextButton.style.display = "block";
-    if(score === 34 && questions.length === 34){
+    if(score === 50 && questions.length === 50){
         claimRewardButton.style.display = "block";
     } else {
         claimRewardButton.style.display = "none";
