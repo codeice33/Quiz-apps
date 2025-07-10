@@ -621,7 +621,7 @@ function showscore(){
     questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
     nextButton.innerHTML = "Play Again";
     nextButton.style.display = "block";
-    if(score === 50 && questions.length === 50){
+    if(score === 53 && questions.length === 53){
         claimRewardButton.style.display = "block";
     } else {
         claimRewardButton.style.display = "none";
