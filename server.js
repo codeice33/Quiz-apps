@@ -10,9 +10,20 @@ const PORT = 4000;
 app.use(cors());
 app.use(express.json());
 
+// In-memory storage for manual payout requests (for demo; use DB for production)
+const manualPayouts = [];
+
 // Manual payout endpoint (for admin only)
 app.post('/manual-payout', (req, res) => {
     const { name, account_number, bank_name, email } = req.body;
+    const payout = {
+        name,
+        account_number,
+        bank_name,
+        email,
+        timestamp: Date.now()
+    };
+    manualPayouts.push(payout);
     // Print payout info to terminal for admin
     console.log('\n--- MANUAL PAYOUT REQUEST ---');
     console.log('Full Name:', name);
@@ -21,6 +32,11 @@ app.post('/manual-payout', (req, res) => {
     console.log('Email:', email);
     console.log('-----------------------------\n');
     res.json({ success: true });
+});
+
+// Admin endpoint to get all manual payout requests
+app.get('/manual-payouts', (req, res) => {
+    res.json(manualPayouts);
 });
 
 // Debug: Print Paystack secret key (first 6 chars only for security)
