@@ -13,9 +13,10 @@ app.use(express.json());
 // In-memory storage for manual payout requests (for demo; use DB for production)
 const manualPayouts = [];
 
-// Helper: Find payout by timestamp (unique enough for demo)
+// Helper: Find payout by timestamp (unique enough for demo, allow type coercion)
 function findPayoutIndex(timestamp) {
-    return manualPayouts.findIndex(p => p.timestamp === timestamp);
+    // Accept both string and number for timestamp
+    return manualPayouts.findIndex(p => String(p.timestamp) === String(timestamp));
 }
 
 // Manual payout endpoint (for admin only)
