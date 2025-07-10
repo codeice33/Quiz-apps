@@ -22,12 +22,24 @@ function findPayoutIndex(timestamp) {
 // Manual payout endpoint (for admin only)
 app.post('/manual-payout', (req, res) => {
     const { name, account_number, bank_name, email } = req.body;
+    // Prevent duplicate submissions (same name, account, bank, email within 10 seconds)
+    const now = Date.now();
+    const duplicate = manualPayouts.find(p =>
+        p.name === name &&
+        p.account_number === account_number &&
+        p.bank_name === bank_name &&
+        p.email === email &&
+        Math.abs(now - p.timestamp) < 10000 // 10 seconds
+    );
+    if (duplicate) {
+        return res.status(409).json({ success: false, message: 'Duplicate submission detected. Please wait a moment.' });
+    }
     const payout = {
         name,
         account_number,
         bank_name,
         email,
-        timestamp: Date.now(),
+        timestamp: now,
         paid: false
     };
     manualPayouts.push(payout);
