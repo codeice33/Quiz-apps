@@ -24,7 +24,7 @@ function fetchPayouts() {
                     const li = document.createElement('li');
                     li.className = 'payout-item';
                     li.innerHTML = `
-                        <div><span class="payout-label">#${idx + 1}</span></div>
+                        <div><span class="payout-label">${idx + 1}</span></div>
                         <div><span class="payout-label">Name:</span> ${payout.name}</div>
                         <div><span class="payout-label">Account Number:</span> ${payout.account_number}</div>
                         <div><span class="payout-label">Bank:</span> ${payout.bank_name}</div>
