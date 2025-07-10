@@ -30,7 +30,16 @@ function fetchPayouts() {
                         <div><span class="payout-label">Bank:</span> ${payout.bank_name}</div>
                         <div><span class="payout-label">Email:</span> ${payout.email}</div>
                         <div><span class="payout-label">Time:</span> ${new Date(payout.timestamp).toLocaleString()}</div>
+                        <button class="mark-paid-btn" style="margin-top:10px;padding:6px 16px;background:#28a745;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;">Mark as Paid</button>
+                        <span class="paid-status" style="margin-left:10px;color:#28a745;font-weight:600;display:none;">PAID</span>
                     `;
+                    // Add click event for Mark as Paid
+                    const paidBtn = li.querySelector('.mark-paid-btn');
+                    const paidStatus = li.querySelector('.paid-status');
+                    paidBtn.addEventListener('click', () => {
+                        paidBtn.style.display = 'none';
+                        paidStatus.style.display = 'inline';
+                    });
                     payoutList.appendChild(li);
                 });
             } else {
