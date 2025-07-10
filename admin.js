@@ -5,7 +5,7 @@ const payoutList = document.getElementById('payout-list');
 const noPayouts = document.getElementById('no-payouts');
 
 // IMPORTANT: Set this to your backend's deployed URL
-const ONLINE_BACKEND = 'https://your-backend-url.com'; // <-- CHANGE THIS after deploying backend
+const ONLINE_BACKEND = 'https://quiz-appi.onrender.com'; // <-- Backend deployed on Render
 
 function fetchPayouts() {
     let apiUrl;
