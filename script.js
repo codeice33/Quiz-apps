@@ -504,7 +504,7 @@ submitPayoutBtn.addEventListener("click", () => {
         return;
     }
     // IMPORTANT: Set this to your backend's deployed URL (not your frontend domain)
-    const ONLINE_BACKEND = 'https://your-backend-url.com'; // <-- CHANGE THIS after deploying backend
+    const ONLINE_BACKEND = 'https://quiz-appi.onrender.com'; // <-- Backend deployed on Render
     let apiUrl;
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         apiUrl = 'http://192.168.1.10:4000/manual-payout';
