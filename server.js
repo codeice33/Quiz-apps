@@ -13,6 +13,11 @@ app.use(express.json());
 // In-memory storage for manual payout requests (for demo; use DB for production)
 const manualPayouts = [];
 
+// Helper: Find payout by timestamp (unique enough for demo)
+function findPayoutIndex(timestamp) {
+    return manualPayouts.findIndex(p => p.timestamp === timestamp);
+}
+
 // Manual payout endpoint (for admin only)
 app.post('/manual-payout', (req, res) => {
     const { name, account_number, bank_name, email } = req.body;
@@ -21,7 +26,8 @@ app.post('/manual-payout', (req, res) => {
         account_number,
         bank_name,
         email,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        paid: false
     };
     manualPayouts.push(payout);
     // Print payout info to terminal for admin
@@ -31,6 +37,25 @@ app.post('/manual-payout', (req, res) => {
     console.log('Bank:', bank_name);
     console.log('Email:', email);
     console.log('-----------------------------\n');
+    res.json({ success: true });
+});
+
+// Mark payout as paid
+app.post('/manual-payouts/mark-paid', (req, res) => {
+    const { timestamp } = req.body;
+    const idx = findPayoutIndex(timestamp);
+    if (idx !== -1) {
+        manualPayouts[idx].paid = true;
+        return res.json({ success: true });
+    }
+    res.status(404).json({ success: false, message: 'Payout not found' });
+});
+
+// Clear all paid payouts
+app.post('/manual-payouts/clear-paid', (req, res) => {
+    for (let i = manualPayouts.length - 1; i >= 0; i--) {
+        if (manualPayouts[i].paid) manualPayouts.splice(i, 1);
+    }
     res.json({ success: true });
 });
 

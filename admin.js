@@ -30,16 +30,31 @@ function fetchPayouts() {
                         <div><span class="payout-label">Bank:</span> ${payout.bank_name}</div>
                         <div><span class="payout-label">Email:</span> ${payout.email}</div>
                         <div><span class="payout-label">Time:</span> ${new Date(payout.timestamp).toLocaleString()}</div>
-                        <button class="mark-paid-btn" style="margin-top:10px;padding:6px 16px;background:#28a745;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;">Mark as Paid</button>
-                        <span class="paid-status" style="margin-left:10px;color:#28a745;font-weight:600;display:none;">PAID</span>
+                        <button class="mark-paid-btn" style="margin-top:10px;padding:6px 16px;background:#28a745;color:#fff;border:none;border-radius:4px;cursor:pointer;font-weight:600;display:${payout.paid ? 'none' : 'inline'};">Mark as Paid</button>
+                        <span class="paid-status" style="margin-left:10px;color:#28a745;font-weight:600;display:${payout.paid ? 'inline' : 'none'};">PAID</span>
                     `;
                     // Add click event for Mark as Paid
                     const paidBtn = li.querySelector('.mark-paid-btn');
                     const paidStatus = li.querySelector('.paid-status');
-                    paidBtn.addEventListener('click', () => {
-                        paidBtn.style.display = 'none';
-                        paidStatus.style.display = 'inline';
-                    });
+                    if (paidBtn) {
+                        paidBtn.addEventListener('click', () => {
+                            fetch(ONLINE_BACKEND + '/manual-payouts/mark-paid', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ timestamp: payout.timestamp })
+                            })
+                            .then(res => res.json())
+                            .then(resp => {
+                                if (resp.success) {
+                                    paidBtn.style.display = 'none';
+                                    paidStatus.style.display = 'inline';
+                                } else {
+                                    alert('Failed to mark as paid.');
+                                }
+                            })
+                            .catch(() => alert('Failed to mark as paid.'));
+                        });
+                    }
                     payoutList.appendChild(li);
                 });
             } else {
@@ -50,6 +65,26 @@ function fetchPayouts() {
             payoutList.innerHTML = '';
             noPayouts.style.display = 'block';
         });
+
+// Add clear paid history button
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing code...
+    const clearBtn = document.createElement('button');
+    clearBtn.textContent = 'Clear Paid History';
+    clearBtn.style.cssText = 'margin:20px auto 0;display:block;padding:10px 24px;background:#dc3545;color:#fff;border:none;border-radius:5px;font-size:16px;font-weight:600;cursor:pointer;';
+    clearBtn.onclick = function() {
+        if (confirm('Are you sure you want to clear all paid payout history?')) {
+            fetch(ONLINE_BACKEND + '/manual-payouts/clear-paid', { method: 'POST' })
+                .then(res => res.json())
+                .then(resp => {
+                    if (resp.success) fetchPayouts();
+                    else alert('Failed to clear paid history.');
+                })
+                .catch(() => alert('Failed to clear paid history.'));
+        }
+    };
+    document.body.appendChild(clearBtn);
+});
 }
 
 // Refresh every 10 seconds
