@@ -430,12 +430,233 @@ body{
     background: #0056b3;
 }
 
-/* Mobile responsiveness for AI assistant */
+/* General Mobile Responsiveness */
+@media (max-width: 768px) {
+    .app {
+        width: 95%;
+        margin: 50px auto 0;
+        padding: 20px;
+    }
+    
+    .app h1 {
+        font-size: 22px;
+        padding-bottom: 20px;
+    }
+    
+    .quiz h2 {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+    
+    .btn {
+        padding: 12px;
+        font-size: 14px;
+        margin: 8px 0;
+    }
+    
+    #next-btn {
+        width: 120px;
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    #welcome-screen h1 {
+        font-size: 24px;
+    }
+    
+    .welcome-text {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .stake-info {
+        padding: 12px;
+        margin: 15px auto;
+        font-size: 14px;
+    }
+    
+    #stake-amount {
+        width: 120px;
+        font-size: 16px;
+        padding: 8px;
+    }
+    
+    #stake-btn, #pay-now-btn {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+    
+    #payment-form {
+        padding: 20px;
+        margin: 20px auto;
+    }
+    
+    #payment-form input {
+        padding: 12px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        margin-bottom: 15px;
+    }
+    
+    #payout-form {
+        padding: 15px;
+        margin-top: 15px;
+    }
+    
+    #payout-form input {
+        padding: 12px;
+        font-size: 16px; /* Prevents zoom on iOS */
+        margin-bottom: 15px;
+    }
+    
+    #submit-payout-btn {
+        padding: 12px;
+        font-size: 16px;
+    }
+}
+
 @media (max-width: 480px) {
+    body {
+        padding: 0 10px;
+    }
+    
+    .app {
+        width: 100%;
+        margin: 20px auto 0;
+        padding: 15px;
+        border-radius: 8px;
+    }
+    
+    .app h1 {
+        font-size: 20px;
+        text-align: center;
+    }
+    
+    .quiz {
+        padding: 15px 0;
+    }
+    
+    .quiz h2 {
+        font-size: 15px;
+        line-height: 1.3;
+        margin-bottom: 15px;
+    }
+    
+    .btn {
+        padding: 10px;
+        font-size: 13px;
+        margin: 6px 0;
+    }
+    
+    #next-btn {
+        width: 100px;
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    #welcome-screen h1 {
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+    
+    .welcome-text {
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .stake-info {
+        padding: 10px;
+        margin: 10px auto;
+        font-size: 13px;
+    }
+    
+    #stake-amount-container {
+        max-width: 250px;
+    }
+    
+    #stake-amount {
+        width: 100px;
+        font-size: 15px;
+        padding: 8px;
+    }
+    
+    #stake-btn, #pay-now-btn {
+        padding: 12px 15px;
+        font-size: 15px;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    #payment-form {
+        padding: 15px;
+        margin: 15px auto;
+        max-width: 100%;
+    }
+    
+    #payment-form input {
+        padding: 12px;
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+    
+    #payout-form {
+        padding: 12px;
+        margin-top: 12px;
+        max-width: 100%;
+    }
+    
+    #payout-form input {
+        padding: 12px;
+        font-size: 16px;
+        margin-bottom: 12px;
+    }
+    
+    #submit-payout-btn {
+        padding: 12px;
+        font-size: 15px;
+        width: 100%;
+    }
+    
+    #claim-reward-btn {
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+        display: block;
+    }
+}
+
+/* Mobile responsiveness for AI assistant */
+@media (max-width: 768px) {
     #ai-chat-window {
-        width: 300px !important;
-        height: 400px !important;
-        right: -10px !important;
+        width: 320px !important;
+        height: 450px !important;
+        right: 10px !important;
+        bottom: 80px !important;
+    }
+    
+    #ai-chat-toggle {
+        width: 55px !important;
+        height: 55px !important;
+        font-size: 22px !important;
+    }
+    
+    .quick-help-btn {
+        font-size: 12px !important;
+        padding: 8px 6px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #ai-assistant-container {
+        bottom: 15px !important;
+        right: 15px !important;
+    }
+    
+    #ai-chat-window {
+        width: calc(100vw - 30px) !important;
+        max-width: 350px !important;
+        height: 420px !important;
+        right: 0 !important;
+        bottom: 70px !important;
     }
     
     #ai-chat-toggle {
@@ -446,6 +667,28 @@ body{
     
     .quick-help-btn {
         font-size: 11px !important;
-        padding: 6px !important;
+        padding: 6px 4px !important;
+    }
+    
+    #ai-chat-messages {
+        padding: 10px !important;
+    }
+    
+    #ai-chat-input {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+    }
+}
+
+@media (max-width: 360px) {
+    #ai-chat-window {
+        width: calc(100vw - 20px) !important;
+        height: 400px !important;
+        right: -5px !important;
+    }
+    
+    #ai-chat-toggle {
+        width: 45px !important;
+        height: 45px !important;
+        font-size: 18px !important;
     }
 }

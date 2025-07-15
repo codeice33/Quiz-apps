@@ -1232,8 +1232,7 @@ submitPayoutBtn.addEventListener("click", async () => {
     submitPayoutBtn.disabled = true;
     submitPayoutBtn.textContent = "Processing...";
     
-    // IMPORTANT: Set this to your backend's deployed URL (not your frontend domain)
-    const ONLINE_BACKEND = 'https://quiz-appi.onrender.com'; // <-- Backend deployed on Render
+    // Use the global ONLINE_BACKEND constant
     let apiUrl;
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         apiUrl = 'http://localhost:4000/manual-payout';
