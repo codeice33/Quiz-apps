@@ -145,6 +145,59 @@ app.get('/health', (req, res) => {
     });
 });
 
+// Send email endpoint (for access codes)
+app.post('/send-email', (req, res) => {
+    const { name, email, accessCode, expiryDate, quizUrl } = req.body;
+    
+    // Basic validation
+    if (!name || !email || !accessCode) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Name, email, and access code are required.' 
+        });
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Invalid email format.' 
+        });
+    }
+    
+    // For now, we'll simulate email sending by logging to console
+    // In production, you would integrate with a real email service like SendGrid, Mailgun, etc.
+    console.log('\n--- EMAIL NOTIFICATION ---');
+    console.log('To:', email);
+    console.log('Subject: Your Quiz Access Code');
+    console.log('Content:');
+    console.log(`Dear ${name},`);
+    console.log('');
+    console.log('Your quiz access code has been generated:');
+    console.log(`Access Code: ${accessCode}`);
+    console.log(`Expires: ${expiryDate}`);
+    console.log('');
+    console.log(`You can use this code to access the quiz at: ${quizUrl}`);
+    console.log('');
+    console.log('Best regards,');
+    console.log('Quiz App Team');
+    console.log('-------------------------\n');
+    
+    // Simulate a small delay like a real email service
+    setTimeout(() => {
+        res.json({ 
+            success: true, 
+            message: 'Email sent successfully (simulated)',
+            details: {
+                recipient: email,
+                accessCode: accessCode,
+                expiryDate: expiryDate
+            }
+        });
+    }, 1000);
+});
+
 // Paystack payout endpoint
 app.post('/claim-reward', async (req, res) => {
     // Collect payout details from frontend
