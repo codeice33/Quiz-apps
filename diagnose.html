@@ -71,10 +71,8 @@
             addResult('🔍 Testing server connection...', 'info');
             
             const urls = [
-                { url: 'http://localhost:4000', desc: 'Root endpoint' },
-                { url: 'http://localhost:4000/health', desc: 'Health check' },
-                { url: 'http://127.0.0.1:4000', desc: 'Root endpoint (127.0.0.1)' },
-                { url: 'http://127.0.0.1:4000/health', desc: 'Health check (127.0.0.1)' }
+                { url: 'https://quiz-appi.onrender.com', desc: 'Root endpoint' },
+                { url: 'https://quiz-appi.onrender.com/health', desc: 'Health check' }
             ];
             
             let anySuccess = false;
@@ -105,7 +103,7 @@
                 score_percentage: 80
             };
             
-            const urls = ['http://localhost:4000/manual-payout', 'http://127.0.0.1:4000/manual-payout'];
+            const urls = ['https://quiz-appi.onrender.com/manual-payout'];
             
             for (const url of urls) {
                 try {

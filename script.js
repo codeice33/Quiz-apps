@@ -417,12 +417,7 @@ function verifyPayment(reference) {
         alert(`Payment of ₦${stakeAmount} successful! The quiz will now begin. Answer correctly to win up to ₦${stakeAmount * 10}!`);
         
         // Still try to verify with our server in the background (for record-keeping)
-        let apiUrl;
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            apiUrl = 'http://localhost:4000/verify-payment';
-        } else {
-            apiUrl = ONLINE_BACKEND + '/verify-payment';
-        }
+        let apiUrl = ONLINE_BACKEND + '/verify-payment';
         
         // Send verification request to our server (but don't wait for it)
         fetch(apiUrl, {
@@ -1233,46 +1228,12 @@ submitPayoutBtn.addEventListener("click", async () => {
     submitPayoutBtn.textContent = "Processing...";
     
     // Use the global ONLINE_BACKEND constant
-    let apiUrl;
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        apiUrl = 'http://localhost:4000/manual-payout';
-    } else {
-        apiUrl = ONLINE_BACKEND + '/manual-payout';
-    }
+    let apiUrl = ONLINE_BACKEND + '/manual-payout';
     
     console.log('Submitting payout to:', apiUrl);
     console.log('Payout data:', { name, account_number, bank_name, email: email || 'undefined' });
     
-    // Test server connection first
-    const isServerReachable = await testServerConnection(apiUrl);
-    if (!isServerReachable) {
-        // Try alternative localhost addresses
-        const alternativeUrls = [
-            'http://127.0.0.1:4000/manual-payout',
-            'http://localhost:4000/manual-payout'
-        ];
-        
-        let foundWorkingUrl = false;
-        for (const altUrl of alternativeUrls) {
-            if (altUrl !== apiUrl) {
-                console.log('Trying alternative URL:', altUrl);
-                const altReachable = await testServerConnection(altUrl);
-                if (altReachable) {
-                    apiUrl = altUrl;
-                    foundWorkingUrl = true;
-                    console.log('Using alternative URL:', apiUrl);
-                    break;
-                }
-            }
-        }
-        
-        if (!foundWorkingUrl) {
-            alert('Cannot connect to server. Please make sure the server is running on http://localhost:4000 and try again.\n\nTo start the server:\n1. Open command prompt\n2. Navigate to the quiz app folder\n3. Run: node server.js');
-            submitPayoutBtn.disabled = false;
-            submitPayoutBtn.textContent = "Submit for Payment";
-            return;
-        }
-    }
+    // No need to test server connection or try localhost; always use ONLINE_BACKEND
     
     // Retry function for robust submission
     async function submitWithRetry(url, data, maxRetries = 3) {
@@ -1356,7 +1317,7 @@ submitPayoutBtn.addEventListener("click", async () => {
         } else if (error.message.includes('Bank code')) {
             errorMessage += "Please check your bank selection.";
         } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
-            errorMessage += "Network connection failed. Please check if the server is running on http://localhost:4000";
+            errorMessage += "Network connection failed. Please check if the server is running on https://quiz-appi.onrender.com";
         } else if (error.message.includes('CORS')) {
             errorMessage += "Server connection blocked. Please restart the server.";
         } else if (error.message.includes('500')) {

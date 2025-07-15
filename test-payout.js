@@ -5,7 +5,7 @@ async function testPayout() {
     try {
         console.log('Testing manual payout endpoint...');
         
-        const response = await axios.post('http://localhost:4000/manual-payout', {
+        const response = await axios.post('https://quiz-appi.onrender.com/manual-payout', {
             name: 'Test User',
             account_number: '1234567890',
             bank_name: 'Test Bank',

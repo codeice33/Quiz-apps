@@ -5,7 +5,7 @@ const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 // Configure CORS to allow requests from frontend
 app.use(cors({
@@ -408,5 +408,5 @@ async function verifyPaystackPayment(reference) {
 }
 
 app.listen(PORT, () => {
-    console.log(`Backend server running on http://localhost:${PORT}`);
+    console.log(`Backend server running and listening on port ${PORT}`);
 });

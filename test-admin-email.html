@@ -68,7 +68,7 @@
             resultDiv.className = 'result';
             
             try {
-                const response = await fetch('http://localhost:4000/health');
+                const response = await fetch('https://quiz-appi.onrender.com/health');
                 const data = await response.json();
                 
                 if (response.ok) {
@@ -91,7 +91,7 @@
             resultDiv.className = 'result';
             
             try {
-                const response = await fetch('http://localhost:4000/send-email', {
+                const response = await fetch('https://quiz-appi.onrender.com/send-email', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

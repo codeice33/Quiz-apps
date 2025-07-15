@@ -42,12 +42,7 @@
             addResult('🔍 Testing admin panel connection...', 'info');
             
             // Test the same logic as admin.js
-            let apiUrl;
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                apiUrl = 'http://localhost:4000/manual-payouts';
-            } else {
-                apiUrl = 'https://quiz-appi.onrender.com/manual-payouts';
-            }
+            let apiUrl = 'https://quiz-appi.onrender.com/manual-payouts';
             
             addResult(`📡 Using URL: ${apiUrl}`, 'info');
             addResult(`🌐 Current hostname: ${window.location.hostname}`, 'info');
@@ -90,7 +85,7 @@
                 
                 // Additional debugging
                 if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    addResult('🔧 This looks like a connection error. Make sure the server is running on http://localhost:4000', 'error');
+                    addResult('🔧 This looks like a connection error. Make sure the server is running on https://quiz-appi.onrender.com', 'error');
                 } else if (error.message.includes('CORS')) {
                     addResult('🔧 This looks like a CORS error. The server should handle this automatically.', 'error');
                 }

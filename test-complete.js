@@ -1,7 +1,7 @@
 // Comprehensive test for all endpoints
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:4000';
+const BASE_URL = 'https://quiz-appi.onrender.com';
 
 async function runTests() {
     console.log('🧪 Running comprehensive server tests...\n');

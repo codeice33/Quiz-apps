@@ -1,7 +1,7 @@
 // Test the complete flow: submit payout -> check admin panel
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:4000';
+const BASE_URL = 'https://quiz-appi.onrender.com';
 
 async function testCompleteFlow() {
     console.log('🧪 Testing complete payout flow...\n');

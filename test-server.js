@@ -1,7 +1,7 @@
 // Simple test script to verify server endpoints
 const axios = require('axios');
 
-const BASE_URL = 'http://localhost:4000';
+const BASE_URL = 'https://quiz-appi.onrender.com';
 
 async function testEndpoints() {
     console.log('Testing server endpoints...\n');

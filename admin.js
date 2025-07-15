@@ -27,12 +27,7 @@ function showStatus(message, type = 'info') {
 const ONLINE_BACKEND = 'https://quiz-appi.onrender.com'; // <-- Backend deployed on Render
 
 function fetchPayouts() {
-    let apiUrl;
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        apiUrl = 'http://localhost:4000/manual-payouts';
-    } else {
-        apiUrl = ONLINE_BACKEND + '/manual-payouts';
-    }
+    let apiUrl = ONLINE_BACKEND + '/manual-payouts';
     
     console.log('Fetching payouts from:', apiUrl);
     showStatus('Loading payouts...', 'info');
@@ -72,12 +67,7 @@ function fetchPayouts() {
                     const paidStatus = li.querySelector('.paid-status');
                     if (paidBtn) {
                         paidBtn.addEventListener('click', () => {
-                            let markPaidUrl;
-                            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                                markPaidUrl = 'http://localhost:4000/manual-payouts/mark-paid';
-                            } else {
-                                markPaidUrl = ONLINE_BACKEND + '/manual-payouts/mark-paid';
-                            }
+                            let markPaidUrl = ONLINE_BACKEND + '/manual-payouts/mark-paid';
                             
                             fetch(markPaidUrl, {
                                 method: 'POST',
@@ -108,7 +98,7 @@ function fetchPayouts() {
             payoutList.innerHTML = `<li class="payout-item" style="color: red; text-align: center; padding: 20px;">
                 <strong>Connection Error</strong><br>
                 ${error.message}<br><br>
-                <small>Make sure the server is running on http://localhost:4000<br>
+                <small>Make sure the server is running on https://quiz-appi.onrender.com<br>
                 Try refreshing the page or check the browser console for details.</small>
             </li>`;
             noPayouts.style.display = 'none';
@@ -138,12 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clearBtn.style.cssText = 'margin:20px auto 0;display:block;padding:10px 24px;background:#dc3545;color:#fff;border:none;border-radius:5px;font-size:16px;font-weight:600;cursor:pointer;';
     clearBtn.onclick = function() {
         if (confirm('Are you sure you want to clear all paid payout history?')) {
-            let clearUrl;
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                clearUrl = 'http://localhost:4000/manual-payouts/clear-paid';
-            } else {
-                clearUrl = ONLINE_BACKEND + '/manual-payouts/clear-paid';
-            }
+            let clearUrl = ONLINE_BACKEND + '/manual-payouts/clear-paid';
             
             fetch(clearUrl, { method: 'POST' })
                 .then(res => res.json())
