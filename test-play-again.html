@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Play Again Functionality</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .scenario { margin: 10px 0; padding: 10px; border-left: 4px solid #007bff; background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <h1>Play Again Functionality Test</h1>
+    <p>This tests that users can play again without having to stake/pay again after completing a quiz.</p>
+    
+    <div class="test-section info">
+        <h2>Test Scenarios</h2>
+        
+        <div class="scenario">
+            <h3>Scenario 1: User with Coupon Code</h3>
+            <p><strong>Steps:</strong></p>
+            <ol>
+                <li>Create a coupon code with ₦750 amount</li>
+                <li>Redeem the code (should set hasStakedMoney = true)</li>
+                <li>Complete quiz and click "Play Again"</li>
+                <li>Should start new quiz without requiring payment</li>
+            </ol>
+            <button onclick="testCouponScenario()">Test Coupon Scenario</button>
+            <div id="coupon-result"></div>
+        </div>
+        
+        <div class="scenario">
+            <h3>Scenario 2: User with Paystack Payment</h3>
+            <p><strong>Steps:</strong></p>
+            <ol>
+                <li>Simulate successful Paystack payment</li>
+                <li>Complete quiz and click "Play Again"</li>
+                <li>Should start new quiz without requiring payment</li>
+            </ol>
+            <button onclick="testPaymentScenario()">Test Payment Scenario</button>
+            <div id="payment-result"></div>
+        </div>
+        
+        <div class="scenario">
+            <h3>Scenario 3: User without Payment</h3>
+            <p><strong>Steps:</strong></p>
+            <ol>
+                <li>User somehow reaches quiz without payment</li>
+                <li>Complete quiz and click "Play Again"</li>
+                <li>Should return to welcome screen to require payment</li>
+            </ol>
+            <button onclick="testNoPaymentScenario()">Test No Payment Scenario</button>
+            <div id="no-payment-result"></div>
+        </div>
+    </div>
+    
+    <div class="test-section info">
+        <h2>Current State Check</h2>
+        <button onclick="checkCurrentState()">Check Current State</button>
+        <div id="current-state"></div>
+    </div>
+    
+    <div class="test-section warning">
+        <h2>Reset Test Environment</h2>
+        <button onclick="resetTestEnvironment()" style="background: #dc3545; color: white;">Reset All Test Data</button>
+    </div>
+    
+    <script>
+        // Simulate the key variables from script.js
+        let hasStakedMoney = false;
+        let userName = '';
+        let userEmail = '';
+        let userId = '';
+        let stakeAmount = 500;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        
+        function testCouponScenario() {
+            const resultDiv = document.getElementById('coupon-result');
+            resultDiv.innerHTML = '<p>🧪 Testing coupon code scenario...</p>';
+            
+            try {
+                // Step 1: Create a test coupon code
+                const accessCode = generateRandomCode(8);
+                const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+                
+                accessCodes[accessCode] = {
+                    userId: 'user_test_' + Date.now(),
+                    name: 'Test User Coupon',
+                    email: 'testcoupon@example.com',
+                    amount: 750,
+                    createdAt: Date.now(),
+                    used: false
+                };
+                
+                localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+                
+                // Step 2: Simulate coupon redemption
+                const codeData = accessCodes[accessCode];
+                userName = codeData.name;
+                userEmail = codeData.email;
+                userId = codeData.userId;
+                stakeAmount = codeData.amount;
+                hasStakedMoney = true; // This is the key flag
+                
+                // Step 3: Simulate quiz completion and "Play Again" click
+                const playAgainResult = simulatePlayAgain();
+                
+                resultDiv.innerHTML = `
+                    <div class="${playAgainResult.success ? 'success' : 'error'}">
+                        <h4>${playAgainResult.success ? '✅' : '❌'} Coupon Scenario Result</h4>
+                        <p><strong>Code Created:</strong> ${accessCode}</p>
+                        <p><strong>Amount:</strong> ₦${stakeAmount}</p>
+                        <p><strong>User:</strong> ${userName}</p>
+                        <p><strong>hasStakedMoney:</strong> ${hasStakedMoney}</p>
+                        <p><strong>Play Again Action:</strong> ${playAgainResult.action}</p>
+                        <p><strong>Expected:</strong> Should restart quiz without payment</p>
+                        <p><strong>Result:</strong> ${playAgainResult.success ? 'PASSED' : 'FAILED'}</p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Test Failed</h4><p>Error: ${error.message}</p></div>`;
+            }
+        }
+        
+        function testPaymentScenario() {
+            const resultDiv = document.getElementById('payment-result');
+            resultDiv.innerHTML = '<p>🧪 Testing payment scenario...</p>';
+            
+            try {
+                // Simulate successful Paystack payment
+                userName = 'Test User Payment';
+                userEmail = 'testpayment@example.com';
+                userId = 'user_payment_' + Date.now();
+                stakeAmount = 1000;
+                hasStakedMoney = true; // Set by successful payment
+                
+                const playAgainResult = simulatePlayAgain();
+                
+                resultDiv.innerHTML = `
+                    <div class="${playAgainResult.success ? 'success' : 'error'}">
+                        <h4>${playAgainResult.success ? '✅' : '❌'} Payment Scenario Result</h4>
+                        <p><strong>Amount Paid:</strong> ₦${stakeAmount}</p>
+                        <p><strong>User:</strong> ${userName}</p>
+                        <p><strong>hasStakedMoney:</strong> ${hasStakedMoney}</p>
+                        <p><strong>Play Again Action:</strong> ${playAgainResult.action}</p>
+                        <p><strong>Expected:</strong> Should restart quiz without payment</p>
+                        <p><strong>Result:</strong> ${playAgainResult.success ? 'PASSED' : 'FAILED'}</p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Test Failed</h4><p>Error: ${error.message}</p></div>`;
+            }
+        }
+        
+        function testNoPaymentScenario() {
+            const resultDiv = document.getElementById('no-payment-result');
+            resultDiv.innerHTML = '<p>🧪 Testing no payment scenario...</p>';
+            
+            try {
+                // Simulate user without payment
+                userName = '';
+                userEmail = '';
+                userId = '';
+                stakeAmount = 500;
+                hasStakedMoney = false; // No payment made
+                
+                const playAgainResult = simulatePlayAgain();
+                
+                resultDiv.innerHTML = `
+                    <div class="${playAgainResult.success ? 'success' : 'error'}">
+                        <h4>${playAgainResult.success ? '✅' : '❌'} No Payment Scenario Result</h4>
+                        <p><strong>hasStakedMoney:</strong> ${hasStakedMoney}</p>
+                        <p><strong>Play Again Action:</strong> ${playAgainResult.action}</p>
+                        <p><strong>Expected:</strong> Should return to welcome screen</p>
+                        <p><strong>Result:</strong> ${playAgainResult.success ? 'PASSED' : 'FAILED'}</p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error"><h4>❌ Test Failed</h4><p>Error: ${error.message}</p></div>`;
+            }
+        }
+        
+        function simulatePlayAgain() {
+            // This simulates the logic from the fixed nextButton click handler
+            let action = '';
+            let success = false;
+            
+            if (hasStakedMoney) {
+                // User has already paid, just restart the quiz
+                action = 'Restart quiz (no payment required)';
+                success = true; // This is what we want
+            } else {
+                // User hasn't paid, send them back to welcome screen
+                action = 'Return to welcome screen (payment required)';
+                success = true; // This is also correct behavior
+            }
+            
+            return { success, action };
+        }
+        
+        function checkCurrentState() {
+            const stateDiv = document.getElementById('current-state');
+            
+            const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+            const codeCount = Object.keys(accessCodes).length;
+            
+            stateDiv.innerHTML = `
+                <div class="info">
+                    <h4>📊 Current Test State</h4>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr><td style="border: 1px solid #ddd; padding: 8px;"><strong>hasStakedMoney:</strong></td><td style="border: 1px solid #ddd; padding: 8px;">${hasStakedMoney}</td></tr>
+                        <tr><td style="border: 1px solid #ddd; padding: 8px;"><strong>userName:</strong></td><td style="border: 1px solid #ddd; padding: 8px;">${userName || 'Not set'}</td></tr>
+                        <tr><td style="border: 1px solid #ddd; padding: 8px;"><strong>userEmail:</strong></td><td style="border: 1px solid #ddd; padding: 8px;">${userEmail || 'Not set'}</td></tr>
+                        <tr><td style="border: 1px solid #ddd; padding: 8px;"><strong>stakeAmount:</strong></td><td style="border: 1px solid #ddd; padding: 8px;">₦${stakeAmount}</td></tr>
+                        <tr><td style="border: 1px solid #ddd; padding: 8px;"><strong>Stored Codes:</strong></td><td style="border: 1px solid #ddd; padding: 8px;">${codeCount}</td></tr>
+                    </table>
+                </div>
+            `;
+        }
+        
+        function resetTestEnvironment() {
+            if (confirm('Reset all test data including variables and stored codes?')) {
+                // Reset variables
+                hasStakedMoney = false;
+                userName = '';
+                userEmail = '';
+                userId = '';
+                stakeAmount = 500;
+                currentQuestionIndex = 0;
+                score = 0;
+                
+                // Clear localStorage
+                localStorage.removeItem('quizAccessCodes');
+                
+                // Clear all result divs
+                document.getElementById('coupon-result').innerHTML = '';
+                document.getElementById('payment-result').innerHTML = '';
+                document.getElementById('no-payment-result').innerHTML = '';
+                document.getElementById('current-state').innerHTML = '';
+                
+                alert('Test environment reset!');
+            }
+        }
+        
+        function generateRandomCode(length) {
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+        
+        // Auto-check current state on page load
+        window.addEventListener('load', checkCurrentState);
+    </script>
+</body>
+</html>

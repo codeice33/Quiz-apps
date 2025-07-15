@@ -44,11 +44,75 @@
     </style>
 </head>
 <body>
-    <div class="admin-container">
+    <!-- Login Section -->
+    <div id="login-section" style="max-width: 400px; margin: 100px auto; padding: 30px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center;">
+        <h2 style="font-size: 1.8rem; margin-bottom: 20px; color: #001e4d;">Admin Access</h2>
+        <div id="login-error" style="color: #dc3545; margin-bottom: 15px; display: none;">Invalid admin code. Please try again.</div>
+        <input type="password" id="admin-password" placeholder="Enter admin code" style="width: 100%; padding: 10px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px;">
+        <button id="login-btn" style="background: #001e4d; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; font-size: 16px; cursor: pointer;">Login</button>
+    </div>
+
+    <!-- Admin Container -->
+    <div class="admin-container" style="display: none;">
         <div class="admin-title">Manual Payout Requests</div>
+        
+        <!-- Admin Navigation -->
+        <div style="margin-bottom: 20px; text-align: center;">
+            <a href="admin-codes.html" style="display: inline-block; background: #001e4d; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 4px; margin-right: 10px;">
+                Manage Access Codes
+            </a>
+            <a href="admin.html" style="display: inline-block; background: #28a745; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 4px; margin-right: 10px;">
+                Payout Requests
+            </a>
+            <button id="refresh-btn" style="background: #007bff; color: #fff; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+                Refresh
+            </button>
+        </div>
+        
+        <!-- Connection Status -->
+        <div id="connection-status" style="margin-bottom: 15px; padding: 10px; border-radius: 4px; text-align: center; display: none;">
+            <span id="status-text"></span>
+        </div>
+        
         <ul id="payout-list" class="payout-list"></ul>
         <div id="no-payouts" class="no-payouts" style="display:none;">No payout requests yet.</div>
     </div>
     <script src="admin.js"></script>
+    <script>
+        const ADMIN_CODE = 'quiz2024admin';
+        const loginSection = document.getElementById('login-section');
+        const adminContainer = document.querySelector('.admin-container');
+        const adminPasswordInput = document.getElementById('admin-password');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+
+        // Check if already logged in
+        // Removed persistent login to require login on every page load
+        /*
+        if (localStorage.getItem('quizAdminLoggedIn') === 'true') {
+            loginSection.style.display = 'none';
+            adminContainer.style.display = 'block';
+        }
+        */
+
+        loginBtn.addEventListener('click', () => {
+            if (adminPasswordInput.value === ADMIN_CODE) {
+                // Removed setting persistent login
+                // localStorage.setItem('quizAdminLoggedIn', 'true');
+                loginSection.style.display = 'none';
+                adminContainer.style.display = 'block';
+                loginError.style.display = 'none';
+            } else {
+                loginError.style.display = 'block';
+                adminPasswordInput.value = '';
+            }
+        });
+
+        adminPasswordInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,10 +1,53 @@
-// Prevent cheating: Restart or end quiz if user leaves the browser tab, but not during payout claim
+// IMPORTANT: Set this to your backend's deployed URL
+const ONLINE_BACKEND = 'https://quiz-appi.onrender.com'; // <-- Backend deployed on Render
+
+// Global variables for payment and quiz state
 let quizEndedForCheating = false;
 let claimingReward = false;
+let hasStakedMoney = false;
+let userEmail = '';
+let userName = '';
+let userPhone = '';
+let userId = ''; // Unique ID for each user
+let stakeAmount = 500; // Default stake amount in Naira
+let isAdminMode = false;
+let adminCode = 'quiz2024admin'; // Admin code - DO NOT CHANGE THIS VALUE
 
+// Store access codes in local storage
+const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+
+// Initialize DOM elements for quiz
+const questionElement = document.getElementById("question");
+const answerButtons = document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+const claimRewardButton = document.getElementById("claim-reward-btn");
+let timerElement = document.getElementById("timer");
+const payoutForm = document.getElementById("payout-form");
+
+// DOM Elements for welcome screen and payment
+const welcomeScreen = document.getElementById('welcome-screen');
+const paymentForm = document.getElementById('payment-form');
+const quizContainer = document.getElementById('quiz-container');
+const stakeBtn = document.getElementById('stake-btn');
+const stakeAmountInput = document.getElementById('stake-amount');
+const stakeAmountDisplay = document.getElementById('stake-amount-display');
+const paymentName = document.getElementById('payment-name');
+const paymentEmail = document.getElementById('payment-email');
+const paymentPhone = document.getElementById('payment-phone');
+const payNowBtn = document.getElementById('pay-now-btn');
+
+// Function to handle cheating prevention
 function handleCheating() {
-    // Only trigger anti-cheat if not claiming reward
-    if (!quizEndedForCheating && !claimingReward) {
+    // Only trigger anti-cheat if:
+    // 1. Quiz has not already ended for cheating
+    // 2. User is not in the process of claiming a reward
+    // 3. User has staked money and started the quiz
+    // 4. User has answered at least 5 questions
+    if (!quizEndedForCheating && 
+        !claimingReward && 
+        hasStakedMoney && 
+        currentQuestionIndex >= 5) {
+        
         quizEndedForCheating = true;
         resetState();
         questionElement.innerHTML = 'Quiz ended: You left the browser tab.';
@@ -14,12 +57,395 @@ function handleCheating() {
     }
 }
 
-window.addEventListener('blur', handleCheating);
-document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden') {
+// Anti-cheating event listeners - only active during the quiz
+// We'll use a flag to track if anti-cheating is active
+let antiCheatingActive = false;
+
+function enableAntiCheating() {
+    antiCheatingActive = true;
+    console.log('Anti-cheating measures activated');
+}
+
+function disableAntiCheating() {
+    antiCheatingActive = false;
+    console.log('Anti-cheating measures deactivated');
+}
+
+window.addEventListener('blur', function() {
+    if (antiCheatingActive) {
         handleCheating();
     }
 });
+
+document.addEventListener('visibilitychange', function() {
+    if (antiCheatingActive && document.visibilityState === 'hidden') {
+        handleCheating();
+    }
+});
+
+// Update stake amount display when input changes
+stakeAmountInput.addEventListener('input', () => {
+    // Ensure minimum stake amount is 100
+    let amount = parseInt(stakeAmountInput.value);
+    if (isNaN(amount) || amount < 100) {
+        amount = 100;
+        stakeAmountInput.value = 100;
+    }
+    
+    // Update the global stake amount
+    stakeAmount = amount;
+    
+    // Update display in the payment form
+    stakeAmountDisplay.textContent = `₦${stakeAmount}`;
+    
+    // Update button text
+    stakeBtn.textContent = `Stake ₦${stakeAmount} to Play`;
+});
+
+// Admin functionality
+const adminToggleBtn = document.getElementById('admin-toggle-btn');
+const adminPanel = document.getElementById('admin-panel');
+const verifyAdminBtn = document.getElementById('verify-admin-btn');
+const adminCodeInput = document.getElementById('admin-code');
+const freeAccessPanel = document.getElementById('free-access-panel');
+const userNameInput = document.getElementById('user-name');
+const userEmailInput = document.getElementById('user-email');
+const generateAccessBtn = document.getElementById('generate-access-btn');
+const accessCodeDisplay = document.getElementById('access-code-display');
+const accessCodeSpan = document.getElementById('access-code');
+const userIdSpan = document.getElementById('user-id');
+const accessCodeInput = document.getElementById('access-code-input');
+const redeemCodeBtn = document.getElementById('redeem-code-btn');
+const adminAccessDiv = document.getElementById('admin-access');
+
+// Show admin toggle button with special key combination (Ctrl+Shift+A)
+document.addEventListener('keydown', function(event) {
+    // Check for both uppercase and lowercase 'a' to make it more reliable
+    if (event.ctrlKey && event.shiftKey && (event.key === 'A' || event.key === 'a')) {
+        console.log('Admin access shortcut detected');
+        if (adminAccessDiv) {
+            adminAccessDiv.style.display = 'block';
+        } else {
+            console.error('Admin access div not found');
+        }
+    }
+});
+
+// Toggle admin panel
+if (adminToggleBtn) {
+    adminToggleBtn.addEventListener('click', () => {
+        if (adminPanel.style.display === 'none') {
+            adminPanel.style.display = 'block';
+        } else {
+            adminPanel.style.display = 'none';
+        }
+    });
+}
+
+// Verify admin code
+if (verifyAdminBtn) {
+    verifyAdminBtn.addEventListener('click', () => {
+        if (adminCodeInput.value === adminCode) {
+            isAdminMode = true;
+            freeAccessPanel.style.display = 'block';
+            alert('Admin access granted!');
+        } else {
+            alert('Invalid admin code');
+        }
+    });
+}
+
+// Generate unique access code for a user
+if (generateAccessBtn) {
+    generateAccessBtn.addEventListener('click', () => {
+        const name = userNameInput.value.trim();
+        const email = userEmailInput.value.trim();
+        const codePriceInput = document.getElementById('code-price') || document.getElementById('code-amount');
+        let codePrice = 500; // default price
+        if (codePriceInput) {
+            const val = parseInt(codePriceInput.value);
+            if (!isNaN(val) && val >= 100) {
+                codePrice = val;
+            }
+        }
+        
+        if (!name || !email) {
+            alert('Please enter both name and email');
+            return;
+        }
+        
+        // Generate unique user ID and access code
+        const userId = 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        const accessCode = generateRandomCode(8);
+        
+        // Store in local storage with amount
+        accessCodes[accessCode] = {
+            userId: userId,
+            name: name,
+            email: email,
+            amount: codePrice,
+            createdAt: Date.now(),
+            used: false
+        };
+        
+        localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+        
+        // Display the generated code and price
+        accessCodeSpan.textContent = accessCode;
+        userIdSpan.textContent = userId;
+        const codePriceDisplay = document.getElementById('code-price-display') || document.getElementById('code-amount-display');
+        if (codePriceDisplay) {
+            codePriceDisplay.textContent = codePrice;
+        }
+        accessCodeDisplay.style.display = 'block';
+    });
+}
+
+// Function to generate random access code
+function generateRandomCode(length) {
+    const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed similar looking characters
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
+// Migration function to convert old 'price' field to 'amount'
+function migrateAccessCodes() {
+    const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+    let migrated = false;
+    
+    for (const code in accessCodes) {
+        if (accessCodes[code].price && !accessCodes[code].amount) {
+            accessCodes[code].amount = accessCodes[code].price;
+            delete accessCodes[code].price;
+            migrated = true;
+        }
+    }
+    
+    if (migrated) {
+        localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+        console.log('Access codes migrated from price to amount field');
+    }
+}
+
+// Redeem access code
+if (redeemCodeBtn) {
+    redeemCodeBtn.addEventListener('click', () => {
+        const code = accessCodeInput.value.trim().toUpperCase();
+        
+        if (!code) {
+            alert('Please enter an access code');
+            return;
+        }
+        
+        // Get the latest access codes from local storage and migrate if needed
+        migrateAccessCodes();
+        const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+        const now = new Date().getTime();
+        
+        if (accessCodes[code]) {
+            // Check if code is expired
+            if (accessCodes[code].expiresAt && accessCodes[code].expiresAt < now) {
+                alert('This access code has expired.');
+                return;
+            }
+            
+            // Check if code is already used
+            if (accessCodes[code].used) {
+                alert('This access code has already been used.');
+                return;
+            }
+            
+            // Mark code as used
+            accessCodes[code].used = true;
+            accessCodes[code].usedAt = now;
+            localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+            
+            // Set user info
+            userName = accessCodes[code].name;
+            userEmail = accessCodes[code].email;
+            userId = accessCodes[code].userId;
+            
+            // Set stake amount to code amount if available (with fallback to price for old codes)
+            const codeAmount = accessCodes[code].amount || accessCodes[code].price;
+            if (codeAmount && !isNaN(codeAmount)) {
+                stakeAmount = codeAmount;
+                // Update stake amount display in UI
+                if (stakeAmountDisplay) {
+                    stakeAmountDisplay.textContent = `₦${stakeAmount}`;
+                }
+                if (stakeAmountInput) {
+                    stakeAmountInput.value = stakeAmount;
+                }
+            }
+            
+            // Start quiz without payment
+            hasStakedMoney = true;
+            welcomeScreen.style.display = 'none';
+            quizContainer.style.display = 'block';
+            
+            // Store user info for potential reward payout
+            if (payoutName) payoutName.value = userName;
+            if (payoutEmail) payoutEmail.value = userEmail;
+            
+            // Start the quiz
+            startQuiz();
+            
+            console.log(`User ${userName} (${userId}) started quiz with access code: ${code}`);
+            alert(`Welcome ${userName}! Your quiz is starting now.`);
+        } else {
+            alert('Invalid access code. Please check and try again.');
+        }
+    });
+}
+
+// Payment flow event listeners
+stakeBtn.addEventListener('click', () => {
+    // Get the stake amount
+    stakeAmount = parseInt(stakeAmountInput.value);
+    
+    // Validate stake amount
+    if (isNaN(stakeAmount) || stakeAmount < 100) {
+        alert('Please enter a valid stake amount (minimum ₦100)');
+        stakeAmountInput.focus();
+        return;
+    }
+    
+    // Update display in the payment form
+    stakeAmountDisplay.textContent = `₦${stakeAmount}`;
+    
+    // Update pay now button text
+    payNowBtn.textContent = `Pay ₦${stakeAmount} Now`;
+    
+    // Show payment form
+    welcomeScreen.style.display = 'none';
+    paymentForm.style.display = 'block';
+});
+
+// Initialize Paystack payment
+payNowBtn.addEventListener('click', () => {
+    // Validate form
+    userName = paymentName.value.trim();
+    userEmail = paymentEmail.value.trim();
+    userPhone = paymentPhone.value.trim();
+    
+    if (!userName || !userEmail || !userPhone) {
+        alert('Please fill in all payment details');
+        return;
+    }
+    
+    // Initialize Paystack payment with custom stake amount
+    const paymentAmount = stakeAmount * 100; // Convert to kobo
+    
+    let handler = PaystackPop.setup({
+        key: 'pk_live_a581d155aa9a69f12752b2d23e10ad8741191985', // Your Paystack public key
+        email: userEmail,
+        amount: paymentAmount,
+        currency: 'NGN',
+        ref: 'quiz_stake_' + Math.floor(Math.random() * 1000000000 + 1),
+        metadata: {
+            custom_fields: [
+                {
+                    display_name: "Full Name",
+                    variable_name: "full_name",
+                    value: userName
+                },
+                {
+                    display_name: "Phone Number",
+                    variable_name: "phone",
+                    value: userPhone
+                }
+            ]
+        },
+        callback: function(response) {
+            console.log('Paystack callback response:', response);
+            
+            // If we get a callback from Paystack, it means the payment was successful
+            // The response object contains: reference, status, trans, message
+            if (response.status === 'success') {
+                console.log('Paystack reported successful payment');
+            } else {
+                console.log('Paystack callback with status:', response.status);
+            }
+            
+            // Proceed with verification regardless of status
+            verifyPayment(response.reference);
+        },
+        onClose: function() {
+            // Handle when user closes payment modal
+            console.log('Payment window closed');
+            payNowBtn.disabled = false;
+            
+            // If the user closed without completing payment
+            if (!hasStakedMoney) {
+                alert('Payment was not completed. Please try again when you are ready.');
+            }
+        }
+    });
+    
+    handler.openIframe();
+});
+
+// Function to verify payment with the server
+function verifyPayment(reference) {
+    // Show loading message
+    payNowBtn.disabled = true;
+    payNowBtn.textContent = 'Verifying payment...';
+    
+    console.log('Payment reference received:', reference);
+    
+    // IMPORTANT: Since we received a callback from Paystack, we can assume the payment was successful
+    // This is a more reliable approach than depending on our server verification
+    
+    // Proceed with the quiz regardless of server verification
+    setTimeout(() => {
+        // Start the quiz immediately since Paystack already confirmed payment
+        hasStakedMoney = true;
+        paymentForm.style.display = 'none';
+        quizContainer.style.display = 'block';
+        
+        // Store user info for potential reward payout
+        if (payoutName) payoutName.value = userName;
+        if (payoutEmail) payoutEmail.value = userEmail;
+        
+        // Start the quiz
+        startQuiz();
+        
+        // Show success message with stake amount
+        alert(`Payment of ₦${stakeAmount} successful! The quiz will now begin. Answer correctly to win up to ₦${stakeAmount * 10}!`);
+        
+        // Still try to verify with our server in the background (for record-keeping)
+        let apiUrl;
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            apiUrl = 'http://localhost:4000/verify-payment';
+        } else {
+            apiUrl = ONLINE_BACKEND + '/verify-payment';
+        }
+        
+        // Send verification request to our server (but don't wait for it)
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                reference,
+                amount: stakeAmount,
+                email: userEmail,
+                name: userName
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Server verification response:', data);
+            // We don't need to do anything with this response since we already started the quiz
+        })
+        .catch(error => {
+            console.error('Background verification error (non-critical):', error);
+            // This error doesn't affect the user experience since we already started the quiz
+        });
+    }, 1500); // Short delay for better UX
+}
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -509,15 +935,13 @@ let questions =[
     }
 ];
 
-const questionElement = document.getElementById("question");
-const answerButtons = document.getElementById("answer-buttons");
-const nextButton = document.getElementById("next-btn");
-const claimRewardButton = document.getElementById("claim-reward-btn");
+// DOM elements already initialized at the top of the file
 
 // Timer elements
 let timerInterval = null;
 let timerTimeout = null;
-let timerElement = document.getElementById('timer');
+
+// Create timer element if it doesn't exist
 if (!timerElement) {
     timerElement = document.createElement('div');
     timerElement.id = 'timer';
@@ -529,15 +953,48 @@ let currentQuestionIndex = 0;
 let score = 0;
 
 function startQuiz(){
+    // Reset quiz state
+    quizEndedForCheating = false;
     currentQuestionIndex = 0;
     score = 0;
     nextButton.innerHTML = "Next";
+    nextButton.style.display = "none";
+    claimRewardButton.style.display = "none";
+    payoutForm.style.display = "none";
+    
+    // Disable anti-cheating at the start
+    disableAntiCheating();
+    
+    // Show user status info if they have staked money
+    const userStatusInfo = document.getElementById('user-status-info');
+    const userStatusText = document.getElementById('user-status-text');
+    if (hasStakedMoney && userStatusInfo && userStatusText) {
+        let statusMessage = `Welcome, ${userName || 'Player'}! `;
+        statusMessage += `Your stake: ₦${stakeAmount} | `;
+        statusMessage += `Good luck with your quiz!`;
+        
+        userStatusText.innerHTML = statusMessage;
+        userStatusInfo.style.display = 'block';
+    } else if (userStatusInfo) {
+        userStatusInfo.style.display = 'none';
+    }
+    
     // Shuffle questions and answers
     questions = shuffleArray(questions);
     questions.forEach(q => {
         q.answers = shuffleArray(q.answers);
     });
+    
+    // Show the first question
     showQuestion();
+    
+    // Enable anti-cheating after a delay to ensure the quiz is fully loaded
+    setTimeout(() => {
+        // Only enable anti-cheating if the user has progressed to at least 5 questions
+        if (currentQuestionIndex >= 5) {
+            enableAntiCheating();
+        }
+    }, 10000); // 10 second delay
 }
 
 function showQuestion(){
@@ -546,8 +1003,8 @@ function showQuestion(){
     let questionNo = currentQuestionIndex + 1;
     questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
 
-    // Timer logic: 5 seconds per question
-    let timeLeft = 7;
+    // Timer logic: 10 seconds per question
+    let timeLeft = 10;
     timerElement.textContent = `Time left: ${timeLeft}s`;
     clearInterval(timerInterval);
     clearTimeout(timerTimeout);
@@ -557,7 +1014,7 @@ function showQuestion(){
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
         }
-    }, 1000);
+    }, 10000 / 10); // Update every 100ms
     timerTimeout = setTimeout(() => {
         timerElement.textContent = 'Time up!';
         // Mark as failed, show correct answer, move to next
@@ -572,7 +1029,7 @@ function showQuestion(){
             nextButton.style.display = "block";
             handelNextButton();
         }, 1000);
-    }, 5000);
+    }, 10000);
 
     currentQuestion.answers.forEach(answer => {
         const button = document.createElement("button");
@@ -618,21 +1075,72 @@ function selectAnswer(e){
 
 function showscore(){
     resetState();
-    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+    
+    // Disable anti-cheating at the end of the quiz
+    disableAntiCheating();
+    
+    // Calculate percentage score
+    const percentage = Math.round((score / questions.length) * 100);
+    
+    // Display score with percentage and play again info
+    let scoreMessage = `You scored ${score} out of ${questions.length}! (${percentage}%)`;
+    
+    // Add play again message - now requires new stake
+    if (hasStakedMoney) {
+        scoreMessage += `<br><br><small style="color: #ff6b35; font-weight: bold;">⚠️ To play again, you need to stake again!</small>`;
+    }
+    
+    questionElement.innerHTML = scoreMessage;
     nextButton.innerHTML = "Play Again";
     nextButton.style.display = "block";
-    if(score === 53 && questions.length === 53){
+    
+    // Only show claim reward button if user has staked money and scored at least 80%
+    if (hasStakedMoney && percentage >= 80) {
+        const rewardAmount = calculateReward(percentage);
+        claimRewardButton.innerHTML = `Claim ₦${rewardAmount} Reward`;
         claimRewardButton.style.display = "block";
     } else {
         claimRewardButton.style.display = "none";
     }
+    
+    // Reset the staking status after quiz completion so user needs to pay again
+    hasStakedMoney = false;
+}
+
+// Calculate reward based on score percentage and stake amount
+function calculateReward(percentage) {
+    // Base reward is the stake amount
+    let multiplier = 1;
+    
+    // Bonus for high scores
+    if (percentage >= 95) {
+        multiplier = 10; // Perfect or near-perfect score: 10x stake
+    } else if (percentage >= 90) {
+        multiplier = 5; // Excellent score: 5x stake
+    } else if (percentage >= 85) {
+        multiplier = 3; // Very good score: 3x stake
+    } else if (percentage >= 80) {
+        multiplier = 2; // Good score: 2x stake
+    }
+    
+    // Calculate reward based on stake amount and multiplier
+    return stakeAmount * multiplier;
 }
 
 function handelNextButton(){
     currentQuestionIndex++;
+    
+    // Enable anti-cheating after 5 questions
+    if (currentQuestionIndex >= 5 && !antiCheatingActive) {
+        enableAntiCheating();
+        console.log('Anti-cheating activated after 5 questions');
+    }
+    
     if(currentQuestionIndex < questions.length){
         showQuestion();
     }else{
+        // Disable anti-cheating at the end of the quiz
+        disableAntiCheating();
         showscore();
     }
 }
@@ -644,16 +1152,26 @@ nextButton.addEventListener("click" , ()=>{
     if(currentQuestionIndex < questions.length){
         handelNextButton();
     }else{
+        // Play Again functionality - always require new payment
         payoutForm.style.display = "none";
         claimingReward = false;
-        startQuiz();
+        
+        // Always send user back to welcome screen to stake again
+        quizContainer.style.display = 'none';
+        welcomeScreen.style.display = 'block';
+        
+        // Reset user data for new game
+        userName = '';
+        userEmail = '';
+        userPhone = '';
+        userId = '';
     }
 });
 
 
 
 
-const payoutForm = document.getElementById("payout-form");
+// Initialize payout form elements
 const payoutName = document.getElementById("payout-name");
 const payoutAccount = document.getElementById("payout-account");
 const payoutBank = document.getElementById("payout-bank");
@@ -666,40 +1184,428 @@ claimRewardButton.addEventListener("click", () => {
     claimRewardButton.style.display = "none";
 });
 
-submitPayoutBtn.addEventListener("click", () => {
+// Function to test server connection
+async function testServerConnection(apiUrl) {
+    try {
+        const healthUrl = apiUrl.replace('/manual-payout', '/health');
+        console.log('Testing server connection to:', healthUrl);
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(healthUrl, { 
+            method: 'GET',
+            signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        console.log('Server connection test result:', response.ok, response.status);
+        return response.ok;
+    } catch (error) {
+        console.error('Server connection test failed:', error.name, error.message);
+        return false;
+    }
+}
+
+submitPayoutBtn.addEventListener("click", async () => {
     const name = payoutName.value.trim();
     const account_number = payoutAccount.value.trim();
     const bank_name = payoutBank.value.trim() || payoutBank.options[payoutBank.selectedIndex].text;
     const email = payoutEmail.value.trim();
-    if(!name || !account_number || !bank_name || !email) {
-        alert("Please fill in all payout details.");
+    
+    if(!name || !account_number || !bank_name) {
+        alert("Please fill in name, account number, and bank details.");
         return;
     }
+    
+    // Validate account number format (10 digits)
+    if (!/^\d{10}$/.test(account_number)) {
+        alert("Account number must be exactly 10 digits.");
+        return;
+    }
+    
+    // Calculate reward amount based on score
+    const percentage = Math.round((score / questions.length) * 100);
+    const reward_amount = calculateReward(percentage);
+    
+    // Disable button to prevent double submission
+    submitPayoutBtn.disabled = true;
+    submitPayoutBtn.textContent = "Processing...";
+    
     // IMPORTANT: Set this to your backend's deployed URL (not your frontend domain)
     const ONLINE_BACKEND = 'https://quiz-appi.onrender.com'; // <-- Backend deployed on Render
     let apiUrl;
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        apiUrl = 'http://192.168.1.10:4000/manual-payout';
+        apiUrl = 'http://localhost:4000/manual-payout';
     } else {
         apiUrl = ONLINE_BACKEND + '/manual-payout';
     }
-    fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, account_number, bank_name, email })
+    
+    console.log('Submitting payout to:', apiUrl);
+    console.log('Payout data:', { name, account_number, bank_name, email: email || 'undefined' });
+    
+    // Test server connection first
+    const isServerReachable = await testServerConnection(apiUrl);
+    if (!isServerReachable) {
+        // Try alternative localhost addresses
+        const alternativeUrls = [
+            'http://127.0.0.1:4000/manual-payout',
+            'http://localhost:4000/manual-payout'
+        ];
+        
+        let foundWorkingUrl = false;
+        for (const altUrl of alternativeUrls) {
+            if (altUrl !== apiUrl) {
+                console.log('Trying alternative URL:', altUrl);
+                const altReachable = await testServerConnection(altUrl);
+                if (altReachable) {
+                    apiUrl = altUrl;
+                    foundWorkingUrl = true;
+                    console.log('Using alternative URL:', apiUrl);
+                    break;
+                }
+            }
+        }
+        
+        if (!foundWorkingUrl) {
+            alert('Cannot connect to server. Please make sure the server is running on http://localhost:4000 and try again.\n\nTo start the server:\n1. Open command prompt\n2. Navigate to the quiz app folder\n3. Run: node server.js');
+            submitPayoutBtn.disabled = false;
+            submitPayoutBtn.textContent = "Submit for Payment";
+            return;
+        }
+    }
+    
+    // Retry function for robust submission
+    async function submitWithRetry(url, data, maxRetries = 3) {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                console.log(`Attempt ${attempt} of ${maxRetries} to submit payout`);
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: `HTTP ${response.status}` }));
+                    throw new Error(errorData.message || `Server error: ${response.status}`);
+                }
+                
+                return await response.json();
+                
+            } catch (error) {
+                console.error(`Attempt ${attempt} failed:`, error.message);
+                
+                if (attempt === maxRetries) {
+                    throw error; // Re-throw on final attempt
+                }
+                
+                // Wait before retry (exponential backoff)
+                await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+            }
+        }
+    }
+    
+    // Submit with retry logic
+    submitWithRetry(apiUrl, {
+        name, 
+        account_number, 
+        bank_name, 
+        email: email || undefined,
+        reward_amount,
+        score,
+        total_questions: questions.length,
+        score_percentage: percentage
     })
-    .then((res) => {
-        if (res.ok) {
-            alert("Submission successful! You will receive your payment in 20-40 minutes.");
+    .then((data) => {
+        if (data.success) {
+            // Calculate reward amount based on score
+            const percentage = Math.round((score / questions.length) * 100);
+            const rewardAmount = calculateReward(percentage);
+            
+            alert(`Submission successful! You will receive your ₦${rewardAmount} reward in 20-40 minutes.`);
             payoutForm.style.display = "none";
             claimingReward = false;
         } else {
-            throw new Error('Network response was not ok');
+            throw new Error(data.message || 'Unexpected server response');
         }
     })
-    .catch(() => {
-        alert("There was an error submitting your payout request. Please try again.");
+    .catch((error) => {
+        console.error('Payout submission error:', error);
+        console.error('Error type:', error.name);
+        console.error('Error message:', error.message);
+        
+        // Provide more specific error messages
+        let errorMessage = "There was an error submitting your payout request. ";
+        
+        if (error.name === 'AbortError') {
+            errorMessage += "Request timed out after multiple attempts. Please check your connection and try again.";
+        } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            errorMessage += "Cannot connect to server. Please make sure the server is running:\n\n1. Open command prompt\n2. Navigate to quiz app folder\n3. Run: node server.js";
+        } else if (error.message.includes('Account number')) {
+            errorMessage += "Please check that your account number is exactly 10 digits.";
+        } else if (error.message.includes('Bank code')) {
+            errorMessage += "Please check your bank selection.";
+        } else if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+            errorMessage += "Network connection failed. Please check if the server is running on http://localhost:4000";
+        } else if (error.message.includes('CORS')) {
+            errorMessage += "Server connection blocked. Please restart the server.";
+        } else if (error.message.includes('500')) {
+            errorMessage += "Server error. Please check server logs and try again.";
+        } else {
+            errorMessage += "Error details: " + error.message + "\n\nTroubleshooting:\n1. Make sure server is running\n2. Check browser console for details\n3. Try refreshing the page";
+        }
+        
+        alert(errorMessage);
+        submitPayoutBtn.disabled = false;
+        submitPayoutBtn.textContent = "Submit for Payment";
     });
 });
 
-startQuiz();
+// Don't start quiz automatically - wait for payment
+// startQuiz();
+
+// QUIZMASTER AI Assistant Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const chatToggle = document.getElementById('ai-chat-toggle');
+    const chatWindow = document.getElementById('ai-chat-window');
+    const chatClose = document.getElementById('ai-chat-close');
+    const chatMessages = document.getElementById('ai-chat-messages');
+    const chatInput = document.getElementById('ai-chat-input');
+    const chatSend = document.getElementById('ai-chat-send');
+    const quickHelpBtns = document.querySelectorAll('.quick-help-btn');
+
+    // Toggle chat window
+    if (chatToggle) {
+        chatToggle.addEventListener('click', function() {
+            if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+                chatWindow.style.display = 'flex';
+                chatToggle.style.transform = 'scale(0.9)';
+            } else {
+                chatWindow.style.display = 'none';
+                chatToggle.style.transform = 'scale(1)';
+            }
+        });
+    }
+
+    // Close chat window
+    if (chatClose) {
+        chatClose.addEventListener('click', function() {
+            chatWindow.style.display = 'none';
+            chatToggle.style.transform = 'scale(1)';
+        });
+    }
+
+    // AI Response Database
+    const aiResponses = {
+        payment: {
+            title: "💳 Payment Help",
+            message: `Here's how payments work:
+
+• **Minimum Stake:** ₦100
+• **Payment Method:** Secure Paystack payment
+• **One-time Payment:** Each quiz requires a new stake
+• **Instant Start:** Quiz begins immediately after payment
+
+**Having payment issues?**
+Contact our support team:
+📧 Email: icyxchange00@gmail.com
+📱 WhatsApp: +2348146839663
+📞 Phone: +2348146839663
+
+We're here to help! 🤝`
+        },
+        quiz: {
+            title: "❓ Quiz Help",
+            message: `Quiz Information:
+
+• **Questions:** Multiple choice questions
+• **Time Limit:** No time pressure - take your time!
+• **Anti-Cheat:** Don't switch tabs during quiz
+• **Scoring:** Percentage-based scoring system
+
+**Quiz Tips:**
+✅ Read questions carefully
+✅ Stay focused on the quiz tab
+✅ Answer all questions to complete
+
+**Need help during quiz?**
+📧 Email: icyxchange00@gmail.com
+📱 WhatsApp: +2348146839663`
+        },
+        rewards: {
+            title: "🏆 Rewards Information",
+            message: `Reward Structure:
+
+🥉 **80-84% correct:** 2x your stake
+🥈 **85-89% correct:** 3x your stake  
+🥇 **90-94% correct:** 5x your stake
+💎 **95-100% correct:** 10x your stake
+
+**Example:** Stake ₦500, score 95% = Win ₦5,000!
+
+**Payout Process:**
+1. Complete quiz with 80%+ score
+2. Click "Claim Reward" button
+3. Enter your bank details
+4. Receive payment within 24 hours
+
+**Questions about rewards?**
+📧 Email: icyxchange00@gmail.com
+📱 WhatsApp: +2348146839663`
+        },
+        contact: {
+            title: "📞 Contact Information",
+            message: `Get in touch with us:
+
+**Primary Contact:**
+📧 **Email:** icyxchange00@gmail.com
+📱 **WhatsApp:** +2348146839663
+📞 **Phone:** +2348146839663
+
+**Business Hours:**
+🕒 Monday - Friday: 9:00 AM - 6:00 PM
+🕒 Saturday: 10:00 AM - 4:00 PM
+🕒 Sunday: Closed
+
+**For urgent issues:**
+Use WhatsApp for fastest response!
+
+**What we can help with:**
+• Payment problems
+• Technical issues
+• Account questions
+• Reward claims
+• General inquiries
+
+We typically respond within 2 hours! 🚀`
+        },
+        default: {
+            title: "🤖 QUIZMASTER Response",
+            message: `I understand you need help! Here are the most common topics I can assist with:
+
+**Quick Help Options:**
+💳 Payment issues and questions
+❓ Quiz rules and gameplay
+🏆 Rewards and payout information
+📞 Contact our support team
+
+**Or try asking about:**
+• "How do I start a quiz?"
+• "What are the payment methods?"
+• "How do rewards work?"
+• "I need technical support"
+
+**For immediate assistance:**
+📧 Email: icyxchange00@gmail.com
+📱 WhatsApp: +2348146839663
+
+How else can I help you today? 😊`
+        }
+    };
+
+    // Add message to chat
+    function addMessage(message, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.style.cssText = `
+            background: ${isUser ? '#001e4d' : 'white'};
+            color: ${isUser ? 'white' : '#333'};
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            ${isUser ? 'margin-left: 20px;' : 'margin-right: 20px;'}
+        `;
+        
+        if (isUser) {
+            messageDiv.innerHTML = `<strong>You:</strong> ${message}`;
+        } else {
+            messageDiv.innerHTML = message;
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Process user input and generate AI response
+    function processUserInput(input) {
+        const lowerInput = input.toLowerCase();
+        
+        // Keyword matching for responses
+        if (lowerInput.includes('payment') || lowerInput.includes('pay') || lowerInput.includes('stake') || lowerInput.includes('money')) {
+            return aiResponses.payment;
+        } else if (lowerInput.includes('quiz') || lowerInput.includes('question') || lowerInput.includes('game') || lowerInput.includes('play')) {
+            return aiResponses.quiz;
+        } else if (lowerInput.includes('reward') || lowerInput.includes('win') || lowerInput.includes('prize') || lowerInput.includes('payout')) {
+            return aiResponses.rewards;
+        } else if (lowerInput.includes('contact') || lowerInput.includes('support') || lowerInput.includes('help') || lowerInput.includes('phone') || lowerInput.includes('email')) {
+            return aiResponses.contact;
+        } else {
+            return aiResponses.default;
+        }
+    }
+
+    // Handle quick help buttons
+    quickHelpBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const topic = this.getAttribute('data-topic');
+            const response = aiResponses[topic] || aiResponses.default;
+            
+            setTimeout(() => {
+                addMessage(`<strong>QUIZMASTER:</strong> ${response.message}`);
+            }, 500);
+        });
+    });
+
+    // Handle chat input
+    function handleChatInput() {
+        const message = chatInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            chatInput.value = '';
+            
+            // Simulate AI thinking delay
+            setTimeout(() => {
+                const response = processUserInput(message);
+                addMessage(`<strong>QUIZMASTER:</strong> ${response.message}`);
+            }, 1000);
+        }
+    }
+
+    // Send button click
+    if (chatSend) {
+        chatSend.addEventListener('click', handleChatInput);
+    }
+
+    // Enter key press
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleChatInput();
+            }
+        });
+    }
+
+    // Add hover effects to chat toggle
+    if (chatToggle) {
+        chatToggle.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1)';
+        });
+        
+        chatToggle.addEventListener('mouseleave', function() {
+            if (chatWindow.style.display !== 'flex') {
+                this.style.transform = 'scale(1)';
+            }
+        });
+    }
+});

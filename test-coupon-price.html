@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Coupon Code Price</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Coupon Code Price Testing</h1>
+    
+    <div class="test-section info">
+        <h2>Step 1: Create Test Coupon Code</h2>
+        <p>Name: <input type="text" id="test-name" value="Test User" /></p>
+        <p>Email: <input type="email" id="test-email" value="test@example.com" /></p>
+        <p>Amount: <input type="number" id="test-amount" value="750" min="100" step="50" /></p>
+        <button onclick="createTestCode()">Create Test Code</button>
+        <div id="created-code-info"></div>
+    </div>
+    
+    <div class="test-section info">
+        <h2>Step 2: Test Code Redemption</h2>
+        <p>Access Code: <input type="text" id="redeem-code" placeholder="Enter code from step 1" /></p>
+        <button onclick="testCodeRedemption()">Test Redemption</button>
+        <div id="redemption-result"></div>
+    </div>
+    
+    <div class="test-section info">
+        <h2>Step 3: View All Stored Codes</h2>
+        <button onclick="viewAllCodes()">View All Codes</button>
+        <div id="all-codes"></div>
+    </div>
+    
+    <div class="test-section info">
+        <h2>Step 4: Clear Test Data</h2>
+        <button onclick="clearTestData()" style="background: #dc3545; color: white;">Clear All Test Codes</button>
+    </div>
+    
+    <script>
+        function createTestCode() {
+            const name = document.getElementById('test-name').value.trim();
+            const email = document.getElementById('test-email').value.trim();
+            const amount = parseFloat(document.getElementById('test-amount').value);
+            
+            if (!name || !email || isNaN(amount) || amount < 100) {
+                alert('Please fill in all fields with valid data');
+                return;
+            }
+            
+            // Generate code using same logic as admin panel
+            const userId = 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const accessCode = generateRandomCode(8);
+            
+            // Get existing codes
+            const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+            
+            // Store with amount field (matching admin-codes.html)
+            accessCodes[accessCode] = {
+                userId: userId,
+                name: name,
+                email: email,
+                amount: amount,
+                createdAt: Date.now(),
+                used: false
+            };
+            
+            localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+            
+            document.getElementById('created-code-info').innerHTML = `
+                <div class="success">
+                    <h3>✅ Code Created Successfully!</h3>
+                    <p><strong>Access Code:</strong> ${accessCode}</p>
+                    <p><strong>User ID:</strong> ${userId}</p>
+                    <p><strong>Amount:</strong> ₦${amount}</p>
+                    <p><strong>Name:</strong> ${name}</p>
+                    <p><strong>Email:</strong> ${email}</p>
+                </div>
+            `;
+            
+            // Auto-fill the redemption field
+            document.getElementById('redeem-code').value = accessCode;
+        }
+        
+        function testCodeRedemption() {
+            const code = document.getElementById('redeem-code').value.trim().toUpperCase();
+            
+            if (!code) {
+                alert('Please enter an access code');
+                return;
+            }
+            
+            const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+            const resultDiv = document.getElementById('redemption-result');
+            
+            if (accessCodes[code]) {
+                if (accessCodes[code].used) {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h3>❌ Code Already Used</h3>
+                            <p>This code has already been redeemed.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Test the redemption logic
+                const codeData = accessCodes[code];
+                let stakeAmount = 500; // default
+                
+                // This is the key test - does it use the amount correctly?
+                if (codeData.amount && !isNaN(codeData.amount)) {
+                    stakeAmount = codeData.amount;
+                }
+                
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <h3>✅ Code Redemption Test Successful!</h3>
+                        <p><strong>Code:</strong> ${code}</p>
+                        <p><strong>User:</strong> ${codeData.name}</p>
+                        <p><strong>Email:</strong> ${codeData.email}</p>
+                        <p><strong>Stored Amount:</strong> ₦${codeData.amount}</p>
+                        <p><strong>Stake Amount Set:</strong> ₦${stakeAmount}</p>
+                        <p><strong>✅ Price Match:</strong> ${codeData.amount === stakeAmount ? 'YES' : 'NO'}</p>
+                    </div>
+                `;
+                
+                // Mark as used for testing
+                accessCodes[code].used = true;
+                accessCodes[code].usedAt = Date.now();
+                localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+                
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Invalid Code</h3>
+                        <p>Code "${code}" not found in storage.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function viewAllCodes() {
+            const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+            const allCodesDiv = document.getElementById('all-codes');
+            
+            if (Object.keys(accessCodes).length === 0) {
+                allCodesDiv.innerHTML = '<p>No codes found in storage.</p>';
+                return;
+            }
+            
+            let html = '<h3>All Stored Access Codes:</h3><pre>';
+            html += JSON.stringify(accessCodes, null, 2);
+            html += '</pre>';
+            
+            allCodesDiv.innerHTML = html;
+        }
+        
+        function clearTestData() {
+            if (confirm('Are you sure you want to clear all test codes?')) {
+                localStorage.removeItem('quizAccessCodes');
+                document.getElementById('created-code-info').innerHTML = '';
+                document.getElementById('redemption-result').innerHTML = '';
+                document.getElementById('all-codes').innerHTML = '';
+                alert('All test data cleared!');
+            }
+        }
+        
+        function generateRandomCode(length) {
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+        
+        // Auto-load existing codes on page load
+        window.addEventListener('load', viewAllCodes);
+    </script>
+</body>
+</html>

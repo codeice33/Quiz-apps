@@ -9,47 +9,284 @@
 <body>
 
     <div class="app">
-        <h1>Simple Quiz</h1>
-        <div class="quiz"></div>
-        <h2 id="question">Question goes here</h2>
-        <div id="answer-buttons"></div>
-        <button id="next-btn">Next</button>
-        <button id="claim-reward-btn" style="display:none; background: #28a745; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; margin-top: 20px;">Claim Reward</button>
-        <div id="payout-form" style="display:none; margin-top:20px;">
-            <input type="text" id="payout-name" placeholder="Full Name" required style="margin-bottom:8px; width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:16px; background:#f8f9fa; color:#333; transition:border-color 0.2s;" />
-            <input type="text" id="payout-account" placeholder="Account Number" required style="margin-bottom:8px; width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:16px; background:#f8f9fa; color:#333; transition:border-color 0.2s;" />
-            <select id="payout-bank" required style="margin-bottom:5px; width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:16px; background:#f8f9fa; color:#333; transition:border-color 0.2s;">
-                <option value="">Select Bank</option>
-                <option value="Access Bank">Access Bank</option>
-                <option value="Citibank">Citibank</option>
-                <option value="Ecobank">Ecobank</option>
-                <option value="Fidelity Bank">Fidelity Bank</option>
-                <option value="First Bank">First Bank</option>
-                <option value="First City Monument Bank">First City Monument Bank (FCMB)</option>
-                <option value="Globus Bank">Globus Bank</option>
-                <option value="Guaranty Trust Bank">Guaranty Trust Bank (GTBank)</option>
-                <option value="Heritage Bank">Heritage Bank</option>
-                <option value="Keystone Bank">Keystone Bank</option>
-                <option value="Polaris Bank">Polaris Bank</option>
-                <option value="Providus Bank">Providus Bank</option>
-                <option value="Stanbic IBTC Bank">Stanbic IBTC Bank</option>
-                <option value="Standard Chartered Bank">Standard Chartered Bank</option>
-                <option value="Sterling Bank">Sterling Bank</option>
-                <option value="Suntrust Bank">Suntrust Bank</option>
-                <option value="Union Bank">Union Bank</option>
-                <option value="United Bank for Africa">United Bank for Africa (UBA)</option>
-                <option value="Unity Bank">Unity Bank</option>
-                <option value="Wema Bank">Wema Bank</option>
-                <option value="Zenith Bank">Zenith Bank</option>
-            </select>
-            <input type="email" id="payout-email" placeholder="Email" required style="margin-bottom:12px; width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:16px; background:#f8f9fa; color:#333; transition:border-color 0.2s;" />
-            <button id="submit-payout-btn" style="background:linear-gradient(90deg,#001e4d 0%,#001e4d 100%);color:#fff;padding:10px 0;border:none;border-radius:5px;font-size:17px;width:100%;font-weight:600;box-shadow:0 2px 8px rgba(40,167,69,0.08);transition:background 0.2s;cursor:pointer;">Submit for Payment</button>
+        <div id="welcome-screen">
+            <h1>Welcome to the Quiz Challenge</h1>
+            <p class="welcome-text">Test your knowledge and win rewards!</p>
+            <p class="stake-info">Stake any amount from ₦100 and win up to 10x your stake if you answer all questions correctly.</p>
+            
+            <div id="stake-amount-container">
+                <label for="stake-amount">Enter your stake amount (₦):</label>
+                <input type="number" id="stake-amount" min="100" value="500" step="100">
+            </div>
+            
+            <div id="payment-options">
+                <button id="stake-btn" class="stake-btn">Stake to Play</button>
+            </div>
+            
+            <!-- Admin Access Link (hidden by default) -->
+            <div id="admin-access" style="margin-top: 20px; display: none;">
+                <button id="admin-toggle-btn" class="admin-toggle-btn">Admin Access</button>
+                <div id="admin-panel" style="display: none; margin-top: 15px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; text-align: center;">
+                    <p style="margin-bottom: 15px;">Access the admin panel to manage access codes and user permissions.</p>
+                    <a href="admin-codes.html" style="display: inline-block; background: #001e4d; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-weight: bold;">Go to Admin Panel</a>
+                </div>
+            </div>
+            
+            <!-- Free Access Code Entry -->
+            <div id="free-access-entry" style="margin-top: 15px; text-align: center;">
+                <p style="margin-bottom: 5px; font-size: 14px; color: #666;">Have an access code?</p>
+                <input type="text" id="access-code-input" placeholder="Enter access code" style="width: 70%; padding: 8px; margin-right: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                <button id="redeem-code-btn" style="background: #001e4d; color: #fff; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Start Quiz</button>
+                
+            </div>
+            
+            <div id="stake-info-details">
+                <p><strong>Rewards based on your performance:</strong></p>
+                <ul>
+                    <li>80-84% correct: 2x your stake</li>
+                    <li>85-89% correct: 3x your stake</li>
+                    <li>90-94% correct: 5x your stake</li>
+                    <li>95-100% correct: 10x your stake</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div id="payment-form" style="display:none; margin-top:20px;">
+            <h2>Payment Details</h2>
+            <p class="payment-info">Enter your details to stake <span id="stake-amount-display">₦500</span> and start the quiz</p>
+            <input type="text" id="payment-name" placeholder="Full Name" required />
+            <input type="email" id="payment-email" placeholder="Email Address" required />
+            <input type="tel" id="payment-phone" placeholder="Phone Number" required />
+            <button id="pay-now-btn">Pay Now</button>
+        </div>
+        
+        <div id="quiz-container" style="display:none;">
+            <h1>Simple Quiz</h1>
+            <div id="user-status-info" style="display:none; background: #e9f7ef; border: 1px solid #28a745; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: center;">
+                <span id="user-status-text"></span>
+            </div>
+            <div class="quiz"></div>
+            <h2 id="question">Question goes here</h2>
+            <div id="answer-buttons"></div>
+            <button id="next-btn">Next</button>
+            <button id="claim-reward-btn" style="display:none; background: #28a745; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; margin-top: 20px;">Claim Reward</button>
+            <div id="payout-form" style="display:none; margin-top:20px;">
+                <input type="text" id="payout-name" placeholder="Full Name" required style="margin-bottom:8px; width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:16px; background:#f8f9fa; color:#333; transition:border-color 0.2s;" />
+                <input type="text" id="payout-account" placeholder="Account Number" required style="margin-bottom:8px; width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:16px; background:#f8f9fa; color:#333; transition:border-color 0.2s;" />
+                <select id="payout-bank" required style="margin-bottom:5px; width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:16px; background:#f8f9fa; color:#333; transition:border-color 0.2s;">
+                    <option value="">Select Bank</option>
+                    <option value="Access Bank">Access Bank</option>
+                    <option value="Citibank">Citibank</option>
+                    <option value="Ecobank">Ecobank</option>
+                    <option value="Fidelity Bank">Fidelity Bank</option>
+                    <option value="First Bank">First Bank</option>
+                    <option value="First City Monument Bank">First City Monument Bank (FCMB)</option>
+                    <option value="Globus Bank">Globus Bank</option>
+                    <option value="Guaranty Trust Bank">Guaranty Trust Bank (GTBank)</option>
+                    <option value="Heritage Bank">Heritage Bank</option>
+                    <option value="Keystone Bank">Keystone Bank</option>
+                    <option value="Polaris Bank">Polaris Bank</option>
+                    <option value="Providus Bank">Providus Bank</option>
+                    <option value="Stanbic IBTC Bank">Stanbic IBTC Bank</option>
+                    <option value="Standard Chartered Bank">Standard Chartered Bank</option>
+                    <option value="Sterling Bank">Sterling Bank</option>
+                    <option value="Suntrust Bank">Suntrust Bank</option>
+                    <option value="Union Bank">Union Bank</option>
+                    <option value="United Bank for Africa">United Bank for Africa (UBA)</option>
+                    <option value="Unity Bank">Unity Bank</option>
+                    <option value="Wema Bank">Wema Bank</option>
+                    <option value="Zenith Bank">Zenith Bank</option>
+                    <option value="Opay">Opay</option>
+                    <option value="Palmpay">Palmpay</option>
+                </select>
+                <input type="email" id="payout-email" placeholder="Email" required style="margin-bottom:12px; width:100%; padding:8px; border:1px solid #ccc; border-radius:4px; font-size:16px; background:#f8f9fa; color:#333; transition:border-color 0.2s;" />
+                <button id="submit-payout-btn" style="background:linear-gradient(90deg,#001e4d 0%, 100%);color:#fff;padding:10px 0;border:none;border-radius:5px;font-size:17px;width:100%;font-weight:600;box-shadow:0 2px 8px rgba(40,167,69,0.08);transition:background 0.2s;cursor:pointer;">Submit for Payment</button>
+            </div>
         </div>
     </div>
+    
+    <!-- Paystack Inline Script -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <script src="./script.js"></script>
 
-      
+    <!-- QUIZMASTER AI Assistant -->
+    <div id="ai-assistant-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <!-- Chat Toggle Button -->
+        <button id="ai-chat-toggle" style="
+            width: 60px; 
+            height: 60px; 
+            border-radius: 50%; 
+            background: linear-gradient(135deg, #001e4d, #0056b3); 
+            border: none; 
+            color: white; 
+            font-size: 24px; 
+            cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(0,30,77,0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        ">
+            🤖
+        </button>
+        
+        <!-- Chat Window -->
+        <div id="ai-chat-window" style="
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        ">
+            <!-- Chat Header -->
+            <div style="
+                background: linear-gradient(135deg, #001e4d, #0056b3);
+                color: white;
+                padding: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            ">
+                <div style="display: flex; align-items: center;">
+                    <span style="font-size: 20px; margin-right: 8px;">🤖</span>
+                    <div>
+                        <div style="font-weight: bold; font-size: 16px;">QUIZMASTER</div>
+                        <div style="font-size: 12px; opacity: 0.9;">AI Assistant</div>
+                    </div>
+                </div>
+                <button id="ai-chat-close" style="
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 18px;
+                    cursor: pointer;
+                    padding: 5px;
+                ">×</button>
+            </div>
+            
+            <!-- Chat Messages -->
+            <div id="ai-chat-messages" style="
+                flex: 1;
+                padding: 15px;
+                overflow-y: auto;
+                background: #f8f9fa;
+            ">
+                <div class="ai-message" style="
+                    background: white;
+                    padding: 12px;
+                    border-radius: 10px;
+                    margin-bottom: 10px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                ">
+                    <strong>QUIZMASTER:</strong> Hello! 👋 I'm here to help you with any questions about the Quiz Challenge. How can I assist you today?
+                </div>
+            </div>
+            
+            <!-- Quick Help Buttons -->
+            <div style="padding: 10px; background: white; border-top: 1px solid #e0e0e0;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                    <button class="quick-help-btn" data-topic="payment" style="
+                        background: #f0f8ff;
+                        border: 1px solid #001e4d;
+                        color: #001e4d;
+                        padding: 8px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">💳 Payment Help</button>
+                    <button class="quick-help-btn" data-topic="quiz" style="
+                        background: #f0f8ff;
+                        border: 1px solid #001e4d;
+                        color: #001e4d;
+                        padding: 8px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">❓ Quiz Help</button>
+                    <button class="quick-help-btn" data-topic="rewards" style="
+                        background: #f0f8ff;
+                        border: 1px solid #001e4d;
+                        color: #001e4d;
+                        padding: 8px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">🏆 Rewards Info</button>
+                    <button class="quick-help-btn" data-topic="contact" style="
+                        background: #f0f8ff;
+                        border: 1px solid #001e4d;
+                        color: #001e4d;
+                        padding: 8px;
+                        border-radius: 6px;
+                        font-size: 12px;
+                        cursor: pointer;
+                    ">📞 Contact Us</button>
+                </div>
+            </div>
+            
+            <!-- Chat Input -->
+            <div style="padding: 10px; background: white; border-top: 1px solid #e0e0e0;">
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="ai-chat-input" placeholder="Type your question..." style="
+                        flex: 1;
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                        border-radius: 20px;
+                        outline: none;
+                        font-size: 14px;
+                    ">
+                    <button id="ai-chat-send" style="
+                        background: #001e4d;
+                        color: white;
+                        border: none;
+                        border-radius: 50%;
+                        width: 40px;
+                        height: 40px;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    ">➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Access Footer Button (hidden but can be revealed by clicking 5 times) -->
+    <div style="position: fixed; bottom: 10px; left: 10px; text-align: center;">
+        <div id="admin-click-area" style="width: 20px; height: 20px; cursor: default;"></div>
+        <button id="admin-footer-btn" style="display: none; background: #6c757d; color: white; border: none; border-radius: 4px; padding: 5px 10px; font-size: 12px; cursor: pointer;">Admin</button>
+    </div>
     
+    <script>
+        // Alternative admin access method - click bottom right corner 5 times
+        const adminClickArea = document.getElementById('admin-click-area');
+        const adminFooterBtn = document.getElementById('admin-footer-btn');
+        let clickCount = 0;
+        
+        if (adminClickArea) {
+            adminClickArea.addEventListener('click', function() {
+                clickCount++;
+                if (clickCount >= 5) {
+                    adminFooterBtn.style.display = 'block';
+                    clickCount = 0;
+                }
+            });
+        }
+        
+        if (adminFooterBtn) {
+            adminFooterBtn.addEventListener('click', function() {
+                window.location.href = 'admin-codes.html';
+            });
+        }
+    </script>
 </body>
 </html>

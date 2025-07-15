@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin Connection</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>Admin Panel Connection Test</h1>
+    <p>This will test if the admin panel can connect to the server and fetch payout data.</p>
+    
+    <button onclick="testAdminConnection()">Test Admin Connection</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        const resultsDiv = document.getElementById('results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `result ${type}`;
+            div.innerHTML = message;
+            resultsDiv.appendChild(div);
+        }
+        
+        function clearResults() {
+            resultsDiv.innerHTML = '';
+        }
+        
+        async function testAdminConnection() {
+            clearResults();
+            addResult('🔍 Testing admin panel connection...', 'info');
+            
+            // Test the same logic as admin.js
+            let apiUrl;
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                apiUrl = 'http://localhost:4000/manual-payouts';
+            } else {
+                apiUrl = 'https://quiz-appi.onrender.com/manual-payouts';
+            }
+            
+            addResult(`📡 Using URL: ${apiUrl}`, 'info');
+            addResult(`🌐 Current hostname: ${window.location.hostname}`, 'info');
+            
+            try {
+                addResult('⏳ Fetching payouts...', 'info');
+                
+                const response = await fetch(apiUrl);
+                addResult(`📊 Response status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                addResult(`✅ Successfully fetched ${data.length} payouts`, 'success');
+                
+                if (data.length > 0) {
+                    addResult(`📋 Payout data preview:<br><pre>${JSON.stringify(data.slice(0, 2), null, 2)}</pre>`, 'info');
+                    
+                    // Test each payout display
+                    data.forEach((payout, idx) => {
+                        const payoutInfo = `
+                            <strong>Payout ${idx + 1}:</strong><br>
+                            Name: ${payout.name}<br>
+                            Account: ${payout.account_number}<br>
+                            Bank: ${payout.bank_name}<br>
+                            Amount: ₦${payout.reward_amount || 500}<br>
+                            Time: ${new Date(payout.timestamp).toLocaleString()}<br>
+                            Paid: ${payout.paid ? 'Yes' : 'No'}
+                        `;
+                        addResult(payoutInfo, 'info');
+                    });
+                } else {
+                    addResult('ℹ️ No payouts found', 'info');
+                }
+                
+            } catch (error) {
+                addResult(`❌ Error: ${error.message}`, 'error');
+                
+                // Additional debugging
+                if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                    addResult('🔧 This looks like a connection error. Make sure the server is running on http://localhost:4000', 'error');
+                } else if (error.message.includes('CORS')) {
+                    addResult('🔧 This looks like a CORS error. The server should handle this automatically.', 'error');
+                }
+            }
+        }
+        
+        // Auto-run test on page load
+        window.addEventListener('load', testAdminConnection);
+    </script>
+</body>
+</html>

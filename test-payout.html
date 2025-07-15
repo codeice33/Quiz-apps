@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Payout</title>
+</head>
+<body>
+    <h1>Test Payout Submission</h1>
+    
+    <form id="testForm">
+        <div>
+            <label>Name:</label>
+            <input type="text" id="name" value="Test User" required>
+        </div>
+        <div>
+            <label>Account Number:</label>
+            <input type="text" id="account" value="1234567890" required>
+        </div>
+        <div>
+            <label>Bank Name:</label>
+            <input type="text" id="bank" value="Test Bank" required>
+        </div>
+        <div>
+            <label>Email:</label>
+            <input type="email" id="email" value="test@example.com">
+        </div>
+        <button type="submit">Test Payout</button>
+    </form>
+    
+    <div id="result"></div>
+    
+    <script>
+        document.getElementById('testForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const account_number = document.getElementById('account').value;
+            const bank_name = document.getElementById('bank').value;
+            const email = document.getElementById('email').value;
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                console.log('Submitting to: http://localhost:4000/manual-payout');
+                
+                const response = await fetch('http://localhost:4000/manual-payout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        account_number,
+                        bank_name,
+                        email,
+                        reward_amount: 500,
+                        score: 8,
+                        total_questions: 10,
+                        score_percentage: 80
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Server error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    resultDiv.innerHTML = '<p style="color: green;">✓ Success! Payout submitted.</p>';
+                } else {
+                    resultDiv.innerHTML = '<p style="color: red;">✗ Failed: ' + (data.message || 'Unknown error') + '</p>';
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = '<p style="color: red;">✗ Error: ' + error.message + '</p>';
+            }
+        });
+    </script>
+</body>
+</html>

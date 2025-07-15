@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App Admin - Access Codes</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 32px 24px;
+        }
+        .admin-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 24px;
+            color: #333;
+            text-align: center;
+        }
+        .admin-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #001e4d;
+        }
+        .admin-section h2 {
+            margin-top: 0;
+            color: #001e4d;
+            font-size: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .btn {
+            background: #001e4d;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .code-display {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e9f7ef;
+            border: 1px solid #28a745;
+            border-radius: 4px;
+            display: none;
+        }
+        .code-value {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .codes-list {
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .codes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .codes-table th, .codes-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .codes-table th {
+            background: #f1f1f1;
+            font-weight: bold;
+            color: #333;
+        }
+        .codes-table tr:last-child td {
+            border-bottom: none;
+        }
+        .codes-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .used-code {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .active-code {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .login-section {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .login-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #001e4d;
+        }
+        .error-message {
+            color: #dc3545;
+            margin-bottom: 15px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="login-section" class="login-section">
+        <h2 class="login-title">Admin Access</h2>
+        <div id="login-error" class="error-message">Invalid admin code. Please try again.</div>
+        <div class="form-group">
+            <input type="password" id="admin-password" class="form-control" placeholder="Enter admin code">
+        </div>
+        <button id="login-btn" class="btn">Login</button>
+    </div>
+
+    <!-- Admin Dashboard (hidden until logged in) -->
+    <div id="admin-dashboard" class="admin-container" style="display: none;">
+        <div class="admin-title">Quiz Access Codes Management</div>
+        
+        <!-- Admin Navigation -->
+        <div style="margin-bottom: 20px; text-align: center;">
+            <a href="admin-codes.html" style="display: inline-block; background: #28a745; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 4px; margin-right: 10px;">
+                Manage Access Codes
+            </a>
+            <a href="admin.html" style="display: inline-block; background: #001e4d; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 4px;">
+                Payout Requests
+            </a>
+            <a href="index.html" style="display: inline-block; background: #6c757d; color: #fff; text-decoration: none; padding: 8px 15px; border-radius: 4px; margin-left: 10px;">
+                Back to Quiz
+            </a>
+        </div>
+        
+        <!-- Generate New Code Section -->
+        <div class="admin-section">
+            <h2>Generate New Access Code</h2>
+            <div class="form-group">
+                <label for="user-name">User Name</label>
+                <input type="text" id="user-name" class="form-control" placeholder="Enter user name">
+            </div>
+            <div class="form-group">
+                <label for="user-email">User Email</label>
+                <input type="email" id="user-email" class="form-control" placeholder="Enter user email">
+            </div>
+            <div class="form-group">
+                <label for="code-expiry">Expiry (days)</label>
+                <input type="number" id="code-expiry" class="form-control" value="7" min="1" max="30">
+            </div>
+            <div class="form-group">
+                <label for="code-amount">Amount (₦)</label>
+                <input type="number" id="code-amount" class="form-control" value="500" min="1" step="any" placeholder="Enter amount for this code">
+            </div>
+            <div class="form-group">
+                <label for="send-email">
+                    <input type="checkbox" id="send-email" checked> 
+                    Send code to user's email automatically
+                </label>
+            </div>
+            <button id="generate-code-btn" class="btn btn-success">Generate Access Code</button>
+            
+            <div id="code-display" class="code-display">
+                <p>Access Code: <span id="generated-code" class="code-value"></span></p>
+                <p>User ID: <span id="user-id" class="code-value"></span></p>
+                <p>Expires: <span id="expiry-date"></span></p>
+                <div id="email-status" style="margin-top: 10px; padding: 8px; border-radius: 4px; display: none;"></div>
+            </div>
+        </div>
+        
+        <!-- View Existing Codes Section -->
+        <div class="admin-section">
+            <h2>Existing Access Codes</h2>
+            <button id="refresh-codes-btn" class="btn">Refresh List</button>
+            
+            <div class="codes-list">
+                <table class="codes-table">
+            <thead>
+                <tr>
+                    <th>Access Code</th>
+                    <th>User</th>
+                    <!--<th>Email</th>-->
+                    <th>Amount (₦)</th>
+                    <th>Created</th>
+                    <th>Expires</th>
+                    <th>Status</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="codes-table-body">
+                <!-- Codes will be populated here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+    </div>
+
+    <script>
+        // Admin code - hardcoded for simplicity
+        const ADMIN_CODE = 'quiz2024admin';
+        
+        // DOM Elements
+        const loginSection = document.getElementById('login-section');
+        const adminDashboard = document.getElementById('admin-dashboard');
+        const adminPassword = document.getElementById('admin-password');
+        const loginBtn = document.getElementById('login-btn');
+        const loginError = document.getElementById('login-error');
+        const userName = document.getElementById('user-name');
+        const userEmail = document.getElementById('user-email');
+        const codeExpiry = document.getElementById('code-expiry');
+        const generateCodeBtn = document.getElementById('generate-code-btn');
+        const codeDisplay = document.getElementById('code-display');
+        const generatedCode = document.getElementById('generated-code');
+        const userId = document.getElementById('user-id');
+        const expiryDate = document.getElementById('expiry-date');
+        const refreshCodesBtn = document.getElementById('refresh-codes-btn');
+        const codesTableBody = document.getElementById('codes-table-body');
+        const sendEmailCheckbox = document.getElementById('send-email');
+        const emailStatus = document.getElementById('email-status');
+        
+        // Check if already logged in
+        // Removed persistent login to require login on every page load
+        /*
+        if (localStorage.getItem('quizAdminLoggedIn') === 'true') {
+            loginSection.style.display = 'none';
+            adminDashboard.style.display = 'block';
+            loadAccessCodes();
+        }
+        */
+        
+        // Login button click
+        loginBtn.addEventListener('click', function() {
+            if (adminPassword.value === ADMIN_CODE) {
+                // Removed setting persistent login
+                // localStorage.setItem('quizAdminLoggedIn', 'true');
+                loginSection.style.display = 'none';
+                adminDashboard.style.display = 'block';
+                loginError.style.display = 'none';
+                loadAccessCodes();
+            } else {
+                loginError.style.display = 'block';
+                adminPassword.value = '';
+            }
+        });
+        
+        // Enter key for login
+        adminPassword.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+        
+        // Generate access code
+        generateCodeBtn.addEventListener('click', function() {
+            const name = userName.value.trim();
+            const email = userEmail.value.trim();
+            const days = parseInt(codeExpiry.value);
+            const amount = parseFloat(document.getElementById('code-amount').value);
+            const shouldSendEmail = sendEmailCheckbox.checked;
+            
+            if (!name || !email) {
+                alert('Please enter both name and email');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            if (isNaN(days) || days < 1 || days > 30) {
+                alert('Please enter a valid expiry period (1-30 days)');
+                return;
+            }
+            
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount greater than 0');
+                return;
+            }
+            
+            // Generate unique user ID and access code
+            const newUserId = 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const accessCode = generateRandomCode(8);
+            
+            // Calculate expiry date
+            const now = new Date();
+            const expiryTime = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+            
+            // Get existing codes or initialize empty object
+            const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+            
+            // Store in local storage
+            accessCodes[accessCode] = {
+                userId: newUserId,
+                name: name,
+                email: email,
+                amount: amount,
+                createdAt: now.getTime(),
+                expiresAt: expiryTime.getTime(),
+                used: false,
+                emailSent: false
+            };
+            
+            localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+            
+            // Display the generated code
+            generatedCode.textContent = accessCode;
+            userId.textContent = newUserId;
+            expiryDate.textContent = formatDate(expiryTime);
+            codeDisplay.style.display = 'block';
+            
+            // Send email if checkbox is checked
+            if (shouldSendEmail) {
+                emailStatus.style.display = 'block';
+                emailStatus.style.background = '#f8f9fa';
+                emailStatus.style.color = '#666';
+                emailStatus.innerHTML = '<p>Sending email to ' + email + '...</p>';
+                
+                // Get the base URL of the current page
+                const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+                const quizUrl = baseUrl + '/index.html';
+                
+                // Send real email using Node.js server
+                fetch('http://localhost:3001/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        accessCode: accessCode,
+                        expiryDate: formatDate(expiryTime),
+                        quizUrl: quizUrl
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        emailStatus.style.background = '#d4edda';
+                        emailStatus.style.color = '#155724';
+                        emailStatus.innerHTML = '<p>✓ Email sent successfully to ' + email + '</p>';
+                        
+                        // Update the code record to mark email as sent
+                        accessCodes[accessCode].emailSent = true;
+                        localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+                    } else {
+                        emailStatus.style.background = '#f8d7da';
+                        emailStatus.style.color = '#721c24';
+                        emailStatus.innerHTML = '<p>✗ Failed to send email: ' + data.message + '</p>';
+                    }
+                    
+                    // Refresh the codes list
+                    loadAccessCodes();
+                })
+                .catch(error => {
+                    emailStatus.style.background = '#f8d7da';
+                    emailStatus.style.color = '#721c24';
+                    
+                    let errorMessage = error.message;
+                    if (error.message === 'Failed to fetch') {
+                        errorMessage = 'Failed to connect to email server. Make sure the email server is running (npm run email).';
+                    }
+                    
+                    emailStatus.innerHTML = '<p>✗ Error sending email: ' + errorMessage + '</p>';
+                    console.error('Error:', error);
+                });
+            } else {
+                emailStatus.style.display = 'none';
+            }
+            
+            // Refresh the codes list
+            loadAccessCodes();
+        });
+        
+        // Function to validate email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Refresh codes list
+        refreshCodesBtn.addEventListener('click', loadAccessCodes);
+        
+        // Function to generate random access code
+        function generateRandomCode(length) {
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Removed similar looking characters
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+        
+        // Function to load access codes
+        function loadAccessCodes() {
+            const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+            codesTableBody.innerHTML = '';
+            
+            const now = new Date().getTime();
+            
+            // Sort codes by creation date (newest first)
+            const sortedCodes = Object.entries(accessCodes).sort((a, b) => {
+                return b[1].createdAt - a[1].createdAt;
+            });
+            
+                if (sortedCodes.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="6" style="text-align: center;">No access codes found</td>';
+                codesTableBody.appendChild(row);
+                return;
+            }
+            
+            sortedCodes.forEach(([code, data]) => {
+                const row = document.createElement('tr');
+                
+                // Determine status
+                let status;
+                if (data.used) {
+                    status = '<span class="used-code">Used</span>';
+                } else if (data.expiresAt < now) {
+                    status = '<span class="used-code">Expired</span>';
+                } else {
+                    status = '<span class="active-code">Active</span>';
+                }
+                
+                // Determine email status
+                let emailStatus;
+                if (data.emailSent) {
+                    emailStatus = '<span style="color: #28a745;">✓ Sent</span>';
+                } else {
+                    emailStatus = '<button class="resend-email-btn" data-code="' + code + '" style="background: #6c757d; color: #fff; border: none; padding: 3px 8px; border-radius: 3px; font-size: 12px; cursor: pointer;">Send Email</button>';
+                }
+                
+                row.innerHTML = `
+                    <td>${code}</td>
+                    <td>${data.name}</td>
+                    <!--<td>${data.email}</td>-->
+                    <td>₦${data.amount.toFixed(2)}</td>
+                    <td>${formatDate(new Date(data.createdAt))}</td>
+                    <td>${formatDate(new Date(data.expiresAt))}</td>
+                    <td>${status}</td>
+                    <td>${emailStatus}</td>
+                `;
+                
+                codesTableBody.appendChild(row);
+            });
+            
+            // Add event listeners to resend email buttons
+            document.querySelectorAll('.resend-email-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const code = this.getAttribute('data-code');
+                    const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+                    const codeData = accessCodes[code];
+                    
+                    if (codeData) {
+                        this.disabled = true;
+                        this.textContent = 'Sending...';
+                        
+                        // Get the base URL of the current page
+                        const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+                        const quizUrl = baseUrl + '/index.html';
+                        
+                        // Store button reference
+                        const button = this;
+                        
+                        // Send real email using Node.js server
+                        fetch('http://localhost:3001/send-email', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                name: codeData.name,
+                                email: codeData.email,
+                                accessCode: code,
+                                expiryDate: formatDate(new Date(codeData.expiresAt)),
+                                quizUrl: quizUrl
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Update the code record to mark email as sent
+                                accessCodes[code].emailSent = true;
+                                localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+                                
+                                // Update the button
+                                button.parentNode.innerHTML = '<span style="color: #28a745;">✓ Sent</span>';
+                            } else {
+                                button.disabled = false;
+                                button.textContent = 'Retry';
+                                alert('Failed to send email: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            button.disabled = false;
+                            button.textContent = 'Retry';
+                            
+                            let errorMessage = error.message;
+                            if (error.message === 'Failed to fetch') {
+                                errorMessage = 'Failed to connect to email server. Make sure the email server is running (npm run email).';
+                            }
+                            
+                            alert('Error sending email: ' + errorMessage);
+                            console.error('Error:', error);
+                        });
+                    }
+                });
+            });
+        }
+        
+        // Format date for display
+        function formatDate(date) {
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+    </script>
+</body>
+</html>

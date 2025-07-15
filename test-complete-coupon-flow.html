@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Coupon Flow Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        input, select { padding: 8px; margin: 5px; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Complete Coupon Code Flow Test</h1>
+    <p>This tests the entire flow: Create code → Redeem code → Calculate rewards</p>
+    
+    <div class="test-section info">
+        <h2>Step 1: Create Test Coupon Codes</h2>
+        <table>
+            <tr>
+                <th>Amount</th>
+                <th>Expected 80% Reward</th>
+                <th>Expected 95% Reward</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td>₦500</td>
+                <td>₦1,000 (2x)</td>
+                <td>₦5,000 (10x)</td>
+                <td><button onclick="createTestCode(500)">Create ₦500 Code</button></td>
+            </tr>
+            <tr>
+                <td>₦750</td>
+                <td>₦1,500 (2x)</td>
+                <td>₦7,500 (10x)</td>
+                <td><button onclick="createTestCode(750)">Create ₦750 Code</button></td>
+            </tr>
+            <tr>
+                <td>₦1000</td>
+                <td>₦2,000 (2x)</td>
+                <td>₦10,000 (10x)</td>
+                <td><button onclick="createTestCode(1000)">Create ₦1000 Code</button></td>
+            </tr>
+        </table>
+        <div id="created-codes"></div>
+    </div>
+    
+    <div class="test-section info">
+        <h2>Step 2: Test Code Redemption & Reward Calculation</h2>
+        <p>Access Code: <input type="text" id="test-code" placeholder="Enter code from step 1" /></p>
+        <p>Score Percentage: 
+            <select id="score-percentage">
+                <option value="95">95% (Perfect - 10x multiplier)</option>
+                <option value="90">90% (Excellent - 5x multiplier)</option>
+                <option value="85">85% (Very Good - 3x multiplier)</option>
+                <option value="80">80% (Good - 2x multiplier)</option>
+                <option value="75">75% (Below threshold - no reward)</option>
+            </select>
+        </p>
+        <button onclick="testRedemptionAndReward()">Test Redemption & Reward Calculation</button>
+        <div id="redemption-test-result"></div>
+    </div>
+    
+    <div class="test-section info">
+        <h2>Step 3: View All Test Results</h2>
+        <button onclick="viewAllTests()">View All Test Results</button>
+        <div id="all-test-results"></div>
+    </div>
+    
+    <div class="test-section warning">
+        <h2>Step 4: Clear Test Data</h2>
+        <button onclick="clearAllTestData()" style="background: #dc3545; color: white;">Clear All Test Data</button>
+    </div>
+    
+    <script>
+        let testResults = [];
+        
+        function createTestCode(amount) {
+            const userId = 'user_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            const accessCode = generateRandomCode(8);
+            
+            // Get existing codes
+            const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+            
+            // Store with amount field (matching admin-codes.html)
+            accessCodes[accessCode] = {
+                userId: userId,
+                name: `Test User ${amount}`,
+                email: `test${amount}@example.com`,
+                amount: amount,
+                createdAt: Date.now(),
+                used: false
+            };
+            
+            localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+            
+            const createdCodesDiv = document.getElementById('created-codes');
+            createdCodesDiv.innerHTML += `
+                <div class="success" style="margin: 5px 0; padding: 10px;">
+                    <strong>✅ Created ₦${amount} Code:</strong> ${accessCode}
+                    <button onclick="document.getElementById('test-code').value='${accessCode}'" style="margin-left: 10px;">Use This Code</button>
+                </div>
+            `;
+        }
+        
+        function testRedemptionAndReward() {
+            const code = document.getElementById('test-code').value.trim().toUpperCase();
+            const scorePercentage = parseInt(document.getElementById('score-percentage').value);
+            
+            if (!code) {
+                alert('Please enter an access code');
+                return;
+            }
+            
+            // Test redemption logic
+            const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
+            const resultDiv = document.getElementById('redemption-test-result');
+            
+            if (!accessCodes[code]) {
+                resultDiv.innerHTML = `<div class="error"><h3>❌ Code Not Found</h3></div>`;
+                return;
+            }
+            
+            if (accessCodes[code].used) {
+                resultDiv.innerHTML = `<div class="error"><h3>❌ Code Already Used</h3></div>`;
+                return;
+            }
+            
+            const codeData = accessCodes[code];
+            
+            // Simulate the redemption logic from script.js
+            let stakeAmount = 500; // default
+            const codeAmount = codeData.amount || codeData.price;
+            if (codeAmount && !isNaN(codeAmount)) {
+                stakeAmount = codeAmount;
+            }
+            
+            // Simulate reward calculation from script.js
+            function calculateReward(percentage, stake) {
+                let multiplier = 1;
+                
+                if (percentage >= 95) {
+                    multiplier = 10;
+                } else if (percentage >= 90) {
+                    multiplier = 5;
+                } else if (percentage >= 85) {
+                    multiplier = 3;
+                } else if (percentage >= 80) {
+                    multiplier = 2;
+                }
+                
+                return stake * multiplier;
+            }
+            
+            const rewardAmount = calculateReward(scorePercentage, stakeAmount);
+            const isEligibleForReward = scorePercentage >= 80;
+            
+            // Store test result
+            const testResult = {
+                code: code,
+                originalAmount: codeData.amount,
+                stakeAmountUsed: stakeAmount,
+                scorePercentage: scorePercentage,
+                rewardAmount: rewardAmount,
+                isEligible: isEligibleForReward,
+                timestamp: new Date().toLocaleString()
+            };
+            
+            testResults.push(testResult);
+            
+            // Mark code as used
+            accessCodes[code].used = true;
+            accessCodes[code].usedAt = Date.now();
+            localStorage.setItem('quizAccessCodes', JSON.stringify(accessCodes));
+            
+            // Display result
+            const statusClass = (stakeAmount === codeData.amount && isEligibleForReward) ? 'success' : 'error';
+            resultDiv.innerHTML = `
+                <div class="${statusClass}">
+                    <h3>${stakeAmount === codeData.amount ? '✅' : '❌'} Redemption Test Result</h3>
+                    <table>
+                        <tr><td><strong>Code:</strong></td><td>${code}</td></tr>
+                        <tr><td><strong>Original Amount:</strong></td><td>₦${codeData.amount}</td></tr>
+                        <tr><td><strong>Stake Amount Set:</strong></td><td>₦${stakeAmount}</td></tr>
+                        <tr><td><strong>Amount Match:</strong></td><td>${stakeAmount === codeData.amount ? '✅ YES' : '❌ NO'}</td></tr>
+                        <tr><td><strong>Score:</strong></td><td>${scorePercentage}%</td></tr>
+                        <tr><td><strong>Reward Eligible:</strong></td><td>${isEligibleForReward ? '✅ YES' : '❌ NO'}</td></tr>
+                        <tr><td><strong>Reward Amount:</strong></td><td>₦${rewardAmount}</td></tr>
+                        <tr><td><strong>Expected Calculation:</strong></td><td>₦${stakeAmount} × ${calculateReward(scorePercentage, 1)} = ₦${rewardAmount}</td></tr>
+                    </table>
+                </div>
+            `;
+        }
+        
+        function viewAllTests() {
+            const allResultsDiv = document.getElementById('all-test-results');
+            
+            if (testResults.length === 0) {
+                allResultsDiv.innerHTML = '<p>No test results yet. Run some tests first!</p>';
+                return;
+            }
+            
+            let html = '<h3>All Test Results:</h3><table><tr><th>Code</th><th>Original Amount</th><th>Stake Used</th><th>Score</th><th>Reward</th><th>Status</th><th>Time</th></tr>';
+            
+            testResults.forEach(result => {
+                const status = (result.stakeAmountUsed === result.originalAmount) ? '✅ PASS' : '❌ FAIL';
+                html += `
+                    <tr>
+                        <td>${result.code}</td>
+                        <td>₦${result.originalAmount}</td>
+                        <td>₦${result.stakeAmountUsed}</td>
+                        <td>${result.scorePercentage}%</td>
+                        <td>₦${result.rewardAmount}</td>
+                        <td>${status}</td>
+                        <td>${result.timestamp}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</table>';
+            allResultsDiv.innerHTML = html;
+        }
+        
+        function clearAllTestData() {
+            if (confirm('Clear all test data including codes and results?')) {
+                localStorage.removeItem('quizAccessCodes');
+                testResults = [];
+                document.getElementById('created-codes').innerHTML = '';
+                document.getElementById('redemption-test-result').innerHTML = '';
+                document.getElementById('all-test-results').innerHTML = '';
+                alert('All test data cleared!');
+            }
+        }
+        
+        function generateRandomCode(length) {
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+    </script>
+</body>
+</html>
