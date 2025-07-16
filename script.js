@@ -449,486 +449,208 @@ function shuffleArray(array) {
     return array;
 }
 
-let questions =[
-    {
-        question: "Which is the largest animal in the world?",
-        answers: [
-            { text: "Shark", correct: false },
-            { text: "Blue whale", correct: true },
-            { text: "Elephant", correct: false },
-            { text: "Giraffe", correct: false },
-        ]
-    },
-    {
-        question: "What is the capital of France?",
-        answers: [
-            { text: "Berlin", correct: false },
-            { text: "Madrid", correct: false },
-            { text: "Paris", correct: true },
-            { text: "Lisbon", correct: false },
-        ]
-    },
-    {
-        question: "Which planet is known as the Red Planet?",
-        answers: [
-            { text: "Earth", correct: false },
-            { text: "Mars", correct: true },
-            { text: "Jupiter", correct: false },
-            { text: "Saturn", correct: false },
-        ]
-    },
-    {
-        question: "Who wrote 'Romeo and Juliet'?",
-        answers: [
-            { text: "William Shakespeare", correct: true },
-            { text: "Charles Dickens", correct: false },
-            { text: "Jane Austen", correct: false },
-            { text: "Mark Twain", correct: false },
-        ]
-    },
-    {
-        question: "What is the largest continent?",
-        answers: [
-            { text: "Africa", correct: false },
-            { text: "Asia", correct: true },
-            { text: "Europe", correct: false },
-            { text: "Antarctica", correct: false },
-        ]
-    },
-    {
-        question: "Which gas do plants absorb from the atmosphere?",
-        answers: [
-            { text: "Oxygen", correct: false },
-            { text: "Carbon Dioxide", correct: true },
-            { text: "Nitrogen", correct: false },
-            { text: "Hydrogen", correct: false },
-        ]
-    },
-    {
-        question: "Who painted the Mona Lisa?",
-        answers: [
-            { text: "Vincent Van Gogh", correct: false },
-            { text: "Leonardo da Vinci", correct: true },
-            { text: "Pablo Picasso", correct: false },
-            { text: "Claude Monet", correct: false },
-        ]
-    },
-    {
-        question: "What is the boiling point of water?",
-        answers: [
-            { text: "90°C", correct: false },
-            { text: "100°C", correct: true },
-            { text: "80°C", correct: false },
-            { text: "120°C", correct: false },
-        ]
-    },
-    {
-        question: "Which language is used to style web pages?",
-        answers: [
-            { text: "HTML", correct: false },
-            { text: "CSS", correct: true },
-            { text: "Python", correct: false },
-            { text: "Java", correct: false },
-        ]
-    },
-    {
-        question: "What is the hardest natural substance?",
-        answers: [
-            { text: "Gold", correct: false },
-            { text: "Iron", correct: false },
-            { text: "Diamond", correct: true },
-            { text: "Silver", correct: false },
-        ]
-    },
-    {
-        question: "What is the smallest prime number?",
-        answers: [
-            { text: "1", correct: false },
-            { text: "2", correct: true },
-            { text: "3", correct: false },
-            { text: "5", correct: false },
-        ]
-    },
-    {
-        question: "Which country is known as the Land of the Rising Sun?",
-        answers: [
-            { text: "China", correct: false },
-            { text: "Japan", correct: true },
-            { text: "Thailand", correct: false },
-            { text: "India", correct: false },
-        ]
-    },
-    {
-        question: "Who discovered gravity?",
-        answers: [
-            { text: "Albert Einstein", correct: false },
-            { text: "Isaac Newton", correct: true },
-            { text: "Galileo Galilei", correct: false },
-            { text: "Nikola Tesla", correct: false },
-        ]
-    },
-    {
-        question: "What is the main ingredient in guacamole?",
-        answers: [
-            { text: "Tomato", correct: false },
-            { text: "Avocado", correct: true },
-            { text: "Onion", correct: false },
-            { text: "Pepper", correct: false },
-        ]
-    },
-    {
-        question: "Which ocean is the largest?",
-        answers: [
-            { text: "Atlantic", correct: false },
-            { text: "Pacific", correct: true },
-            { text: "Indian", correct: false },
-            { text: "Arctic", correct: false },
-        ]
-    },
-    {
-        question: "What is the chemical symbol for gold?",
-        answers: [
-            { text: "Au", correct: true },
-            { text: "Ag", correct: false },
-            { text: "Gd", correct: false },
-            { text: "Go", correct: false },
-        ]
-    },
-    {
-        question: "Who is known as the Father of Computers?",
-        answers: [
-            { text: "Charles Babbage", correct: true },
-            { text: "Alan Turing", correct: false },
-            { text: "Bill Gates", correct: false },
-            { text: "Steve Jobs", correct: false },
-        ]
-    },
-    {
-        question: "Which country gifted the Statue of Liberty to the USA?",
-        answers: [
-            { text: "England", correct: false },
-            { text: "France", correct: true },
-            { text: "Germany", correct: false },
-            { text: "Spain", correct: false },
-        ]
-    },
-    {
-        question: "What is the largest desert in the world?",
-        answers: [
-            { text: "Sahara", correct: false },
-            { text: "Antarctic", correct: true },
-            { text: "Gobi", correct: false },
-            { text: "Kalahari", correct: false },
-        ]
-    },
-    {
-        question: "Which instrument measures atmospheric pressure?",
-        answers: [
-            { text: "Thermometer", correct: false },
-            { text: "Barometer", correct: true },
-            { text: "Hygrometer", correct: false },
-            { text: "Anemometer", correct: false },
-        ]
-    },
-    {
-        question: "Who invented the telephone?",
-        answers: [
-            { text: "Alexander Graham Bell", correct: true },
-            { text: "Thomas Edison", correct: false },
-            { text: "Nikola Tesla", correct: false },
-            { text: "Guglielmo Marconi", correct: false },
-        ]
-    },
-    {
-        question: "What is the capital of Australia?",
-        answers: [
-            { text: "Sydney", correct: false },
-            { text: "Melbourne", correct: false },
-            { text: "Canberra", correct: true },
-            { text: "Perth", correct: false },
-        ]
-    },
-    {
-        question: "Which is the longest river in the world?",
-        answers: [
-            { text: "Amazon", correct: false },
-            { text: "Nile", correct: true },
-            { text: "Yangtze", correct: false },
-            { text: "Mississippi", correct: false },
-        ]
-    },
-    {
-        question: "What is the square root of 64?",
-        answers: [
-            { text: "6", correct: false },
-            { text: "8", correct: true },
-            { text: "7", correct: false },
-            { text: "9", correct: false },
-        ]
-    },
-    {
-        question: "Which element has the atomic number 1?",
-        answers: [
-            { text: "Oxygen", correct: false },
-            { text: "Hydrogen", correct: true },
-            { text: "Helium", correct: false },
-            { text: "Carbon", correct: false },
-        ]
-    },
-    {
-        question: "Who was the first President of the United States?",
-        answers: [
-            { text: "Abraham Lincoln", correct: false },
-            { text: "George Washington", correct: true },
-            { text: "Thomas Jefferson", correct: false },
-            { text: "John Adams", correct: false },
-        ]
-    },
-    {
-        question: "Which is the largest internal organ in the human body?",
-        answers: [
-            { text: "Heart", correct: false },
-            { text: "Liver", correct: true },
-            { text: "Lung", correct: false },
-            { text: "Kidney", correct: false },
-        ]
-    },
-    {
-        question: "What is the main language spoken in Brazil?",
-        answers: [
-            { text: "Spanish", correct: false },
-            { text: "Portuguese", correct: true },
-            { text: "French", correct: false },
-            { text: "English", correct: false },
-        ]
-    },
-    {
-        question: "Which year did World War II end?",
-        answers: [
-            { text: "1945", correct: true },
-            { text: "1939", correct: false },
-            { text: "1942", correct: false },
-            { text: "1950", correct: false },
-        ]
-    },
-    {
-        question: "What is the freezing point of water?",
-        answers: [
-            { text: "0°C", correct: true },
-            { text: "32°C", correct: false },
-            { text: "-10°C", correct: false },
-            { text: "100°C", correct: false },
-        ]
-    },
-    {
-        question: "Which country hosted the 2016 Summer Olympics?",
-        answers: [
-            { text: "China", correct: false },
-            { text: "Brazil", correct: true },
-            { text: "UK", correct: false },
-            { text: "Russia", correct: false },
-        ]
-    },
-    {
-        question: "What is the tallest mountain in the world?",
-        answers: [
-            { text: "K2", correct: false },
-            { text: "Mount Everest", correct: true },
-            { text: "Kangchenjunga", correct: false },
-            { text: "Lhotse", correct: false },
-        ]
-    },
-    {
-        question: "Which is the smallest continent?",
-        answers: [
-            { text: "Europe", correct: false },
-            { text: "Australia", correct: true },
-            { text: "Antarctica", correct: false },
-            { text: "South America", correct: false },
-        ]
-    },
-    {
-        question: "Who is the author of 'Harry Potter'?",
-        answers: [
-            { text: "J.K. Rowling", correct: true },
-            { text: "J.R.R. Tolkien", correct: false },
-            { text: "Stephen King", correct: false },
-            { text: "Roald Dahl", correct: false },
-        ]
-    },
-    // --- Added questions to make 50 ---
-    {
-        question: "What is the capital of Canada?",
-        answers: [
-            { text: "Toronto", correct: false },
-            { text: "Ottawa", correct: true },
-            { text: "Vancouver", correct: false },
-            { text: "Montreal", correct: false },
-        ]
-    },
-    {
-        question: "Which metal is liquid at room temperature?",
-        answers: [
-            { text: "Mercury", correct: true },
-            { text: "Gold", correct: false },
-            { text: "Silver", correct: false },
-            { text: "Copper", correct: false },
-        ]
-    },
-    {
-        question: "What is the largest planet in our solar system?",
-        answers: [
-            { text: "Earth", correct: false },
-            { text: "Jupiter", correct: true },
-            { text: "Saturn", correct: false },
-            { text: "Mars", correct: false },
-        ]
-    },
-    {
-        question: "Who painted the ceiling of the Sistine Chapel?",
-        answers: [
-            { text: "Michelangelo", correct: true },
-            { text: "Da Vinci", correct: false },
-            { text: "Raphael", correct: false },
-            { text: "Donatello", correct: false },
-        ]
-    },
-    {
-        question: "Which country is known as the Land of a Thousand Lakes?",
-        answers: [
-            { text: "Finland", correct: true },
-            { text: "Sweden", correct: false },
-            { text: "Norway", correct: false },
-            { text: "Denmark", correct: false },
-        ]
-    },
-    {
-        question: "What is the chemical symbol for sodium?",
-        answers: [
-            { text: "Na", correct: true },
-            { text: "So", correct: false },
-            { text: "S", correct: false },
-            { text: "N", correct: false },
-        ]
-    },
-    {
-        question: "Who is the Greek god of the sea?",
-        answers: [
-            { text: "Poseidon", correct: true },
-            { text: "Zeus", correct: false },
-            { text: "Apollo", correct: false },
-            { text: "Hermes", correct: false },
-        ]
-    },
-    {
-        question: "Which country invented paper?",
-        answers: [
-            { text: "China", correct: true },
-            { text: "Egypt", correct: false },
-            { text: "Greece", correct: false },
-            { text: "India", correct: false },
-        ]
-    },
-    {
-        question: "What is the main ingredient in traditional Japanese miso soup?",
-        answers: [
-            { text: "Miso paste", correct: true },
-            { text: "Soy sauce", correct: false },
-            { text: "Rice", correct: false },
-            { text: "Seaweed", correct: false },
-        ]
-    },
-    {
-        question: "Which is the smallest bone in the human body?",
-        answers: [
-            { text: "Stapes", correct: true },
-            { text: "Femur", correct: false },
-            { text: "Tibia", correct: false },
-            { text: "Ulna", correct: false },
-        ]
-    },
-    {
-        question: "What is the national flower of Japan?",
-        answers: [
-            { text: "Cherry Blossom", correct: true },
-            { text: "Rose", correct: false },
-            { text: "Lily", correct: false },
-            { text: "Lotus", correct: false },
-        ]
-    },
-    {
-        question: "Which element is needed for strong bones and teeth?",
-        answers: [
-            { text: "Calcium", correct: true },
-            { text: "Iron", correct: false },
-            { text: "Potassium", correct: false },
-            { text: "Magnesium", correct: false },
-        ]
-    },
-    {
-        question: "Who was the first man to step on the moon?",
-        answers: [
-            { text: "Neil Armstrong", correct: true },
-            { text: "Buzz Aldrin", correct: false },
-            { text: "Yuri Gagarin", correct: false },
-            { text: "Michael Collins", correct: false },
-        ]
-    },
-    {
-        question: "Which country is the origin of the car brand 'Toyota'?",
-        answers: [
-            { text: "Japan", correct: true },
-            { text: "USA", correct: false },
-            { text: "Germany", correct: false },
-            { text: "South Korea", correct: false },
-        ]
-    },
-    {
-        question: "What is the largest mammal on land?",
-        answers: [
-            { text: "Elephant", correct: true },
-            { text: "Giraffe", correct: false },
-            { text: "Hippopotamus", correct: false },
-            { text: "Rhinoceros", correct: false },
-        ]
-    },
-    {
-        question: "Which is the longest bone in the human body?",
-        answers: [
-            { text: "Femur", correct: true },
-            { text: "Tibia", correct: false },
-            { text: "Fibula", correct: false },
-            { text: "Humerus", correct: false },
-        ]
-    },
-    {
-        question: "What is the capital city of Kenya?",
-        answers: [
-            { text: "Nairobi", correct: true },
-            { text: "Mombasa", correct: false },
-            { text: "Kampala", correct: false },
-            { text: "Addis Ababa", correct: false },
-        ]
-    },
-    {
-        question: "Which gas do humans need to breathe?",
-        answers: [
-            { text: "Oxygen", correct: true },
-            { text: "Carbon Dioxide", correct: false },
-            { text: "Nitrogen", correct: false },
-            { text: "Hydrogen", correct: false },
-        ]
-    },
-    {
-        question: "What is the largest island in the world?",
-        answers: [
-            { text: "Greenland", correct: true },
-            { text: "Australia", correct: false },
-            { text: "Borneo", correct: false },
-            { text: "Madagascar", correct: false },
-        ]
-    }
+// --- QUESTION BANK BY DIFFICULTY ---
+// --- EXPANDED QUESTION BANKS ---
+// --- EXPANDED QUESTION BANKS ---
+const hardQuestions = [
+    { question: "What is the capital of Liechtenstein?", answers: [ { text: "Vaduz", correct: true }, { text: "Bern", correct: false }, { text: "Vienna", correct: false }, { text: "Zurich", correct: false } ] },
+    { question: "Who developed the polio vaccine?", answers: [ { text: "Jonas Salk", correct: true }, { text: "Louis Pasteur", correct: false }, { text: "Edward Jenner", correct: false }, { text: "Alexander Fleming", correct: false } ] },
+    { question: "Which mathematician is known as the father of geometry?", answers: [ { text: "Euclid", correct: true }, { text: "Pythagoras", correct: false }, { text: "Archimedes", correct: false }, { text: "Isaac Newton", correct: false } ] },
+    { question: "What is the rarest blood type?", answers: [ { text: "AB negative", correct: true }, { text: "O positive", correct: false }, { text: "A positive", correct: false }, { text: "B negative", correct: false } ] },
+    { question: "Which African country was never colonized?", answers: [ { text: "Ethiopia", correct: true }, { text: "Nigeria", correct: false }, { text: "Ghana", correct: false }, { text: "Kenya", correct: false } ] },
+    { question: "What is the chemical symbol for potassium?", answers: [ { text: "K", correct: true }, { text: "P", correct: false }, { text: "Pt", correct: false }, { text: "Po", correct: false } ] },
+    { question: "Who was the first person to reach the South Pole?", answers: [ { text: "Roald Amundsen", correct: true }, { text: "Robert Falcon Scott", correct: false }, { text: "Ernest Shackleton", correct: false }, { text: "Edmund Hillary", correct: false } ] },
+    { question: "Which planet has the shortest day?", answers: [ { text: "Jupiter", correct: true }, { text: "Saturn", correct: false }, { text: "Mars", correct: false }, { text: "Mercury", correct: false } ] },
+    { question: "What is the largest internal organ in the human body?", answers: [ { text: "Liver", correct: true }, { text: "Heart", correct: false }, { text: "Lung", correct: false }, { text: "Kidney", correct: false } ] },
+    { question: "Who was the first woman in space?", answers: [ { text: "Valentina Tereshkova", correct: true }, { text: "Sally Ride", correct: false }, { text: "Mae Jemison", correct: false }, { text: "Yuri Gagarin", correct: false } ] },
+    { question: "Which country has the most UNESCO World Heritage Sites?", answers: [ { text: "Italy", correct: true }, { text: "China", correct: false }, { text: "Spain", correct: false }, { text: "France", correct: false } ] },
+    { question: "What is the smallest bone in the human body?", answers: [ { text: "Stapes", correct: true }, { text: "Femur", correct: false }, { text: "Ulna", correct: false }, { text: "Tibia", correct: false } ] },
+    { question: "Who is the author of 'The Brothers Karamazov'?", answers: [ { text: "Fyodor Dostoevsky", correct: true }, { text: "Leo Tolstoy", correct: false }, { text: "Anton Chekhov", correct: false }, { text: "Vladimir Nabokov", correct: false } ] },
+    { question: "Which element has the highest melting point?", answers: [ { text: "Tungsten", correct: true }, { text: "Iron", correct: false }, { text: "Gold", correct: false }, { text: "Platinum", correct: false } ] },
+    { question: "What is the largest moon of Saturn?", answers: [ { text: "Titan", correct: true }, { text: "Rhea", correct: false }, { text: "Iapetus", correct: false }, { text: "Dione", correct: false } ] },
+    { question: "Who was the first African to win an Olympic gold medal?", answers: [ { text: "Abebe Bikila", correct: true }, { text: "Haile Gebrselassie", correct: false }, { text: "Samuel Wanjiru", correct: false }, { text: "Kipchoge Keino", correct: false } ] },
+    { question: "Which country is the largest producer of uranium?", answers: [ { text: "Kazakhstan", correct: true }, { text: "Canada", correct: false }, { text: "Australia", correct: false }, { text: "Russia", correct: false } ] },
+    { question: "What is the longest river in Asia?", answers: [ { text: "Yangtze", correct: true }, { text: "Yellow River", correct: false }, { text: "Mekong", correct: false }, { text: "Ganges", correct: false } ] },
+    { question: "Who painted 'Guernica'?", answers: [ { text: "Pablo Picasso", correct: true }, { text: "Salvador Dalí", correct: false }, { text: "Joan Miró", correct: false }, { text: "Francisco Goya", correct: false } ] },
+    { question: "Which Nobel Prize category was first awarded in 1969?", answers: [ { text: "Economics", correct: true }, { text: "Peace", correct: false }, { text: "Literature", correct: false }, { text: "Chemistry", correct: false } ] },
+
+    { question: "Which country hosted the 2008 Summer Olympics?", answers: [ { text: "China", correct: true }, { text: "UK", correct: false }, { text: "Brazil", correct: false }, { text: "Russia", correct: false } ] },
+    { question: "Who was the first President of South Africa after apartheid?", answers: [ { text: "Nelson Mandela", correct: true }, { text: "Jacob Zuma", correct: false }, { text: "Thabo Mbeki", correct: false }, { text: "F.W. de Klerk", correct: false } ] },
+    { question: "Which football club is known as 'The Old Lady'?", answers: [ { text: "Juventus", correct: true }, { text: "AC Milan", correct: false }, { text: "Inter Milan", correct: false }, { text: "Roma", correct: false } ] },
+    { question: "What is the largest bone in the human body?", answers: [ { text: "Femur", correct: true }, { text: "Tibia", correct: false }, { text: "Fibula", correct: false }, { text: "Humerus", correct: false } ] },
+    { question: "Which country is the origin of the car brand 'Hyundai'?", answers: [ { text: "South Korea", correct: true }, { text: "Japan", correct: false }, { text: "China", correct: false }, { text: "USA", correct: false } ] },
+    { question: "Who discovered penicillin?", answers: [ { text: "Alexander Fleming", correct: true }, { text: "Louis Pasteur", correct: false }, { text: "Marie Curie", correct: false }, { text: "Edward Jenner", correct: false } ] },
+    { question: "Which footballer has the most international goals?", answers: [ { text: "Cristiano Ronaldo", correct: true }, { text: "Ali Daei", correct: false }, { text: "Pele", correct: false }, { text: "Ferenc Puskas", correct: false } ] },
+    { question: "What is the capital of Kazakhstan?", answers: [ { text: "Astana", correct: true }, { text: "Almaty", correct: false }, { text: "Tashkent", correct: false }, { text: "Bishkek", correct: false } ] },
+    { question: "Which country has the most volcanoes?", answers: [ { text: "Indonesia", correct: true }, { text: "Japan", correct: false }, { text: "USA", correct: false }, { text: "Italy", correct: false } ] },
+    { question: "Who is the only player to win the Champions League with three different clubs?", answers: [ { text: "Clarence Seedorf", correct: true }, { text: "Cristiano Ronaldo", correct: false }, { text: "Samuel Eto'o", correct: false }, { text: "Zlatan Ibrahimovic", correct: false } ] },
+    { question: "What is the largest desert in the world?", answers: [ { text: "Antarctic", correct: true }, { text: "Sahara", correct: false }, { text: "Gobi", correct: false }, { text: "Kalahari", correct: false } ] },
+    { question: "Which country is the largest island in the world?", answers: [ { text: "Greenland", correct: true }, { text: "Australia", correct: false }, { text: "Borneo", correct: false }, { text: "Madagascar", correct: false } ] },
+    { question: "Who invented the World Wide Web?", answers: [ { text: "Tim Berners-Lee", correct: true }, { text: "Bill Gates", correct: false }, { text: "Steve Jobs", correct: false }, { text: "Mark Zuckerberg", correct: false } ] },
+    { question: "Which footballer is nicknamed 'The Pharaoh'?", answers: [ { text: "Mohamed Salah", correct: true }, { text: "Ahmed Hegazi", correct: false }, { text: "Mahmoud Hassan Trezeguet", correct: false }, { text: "Mohamed Elneny", correct: false } ] },
+    { question: "What is the chemical symbol for lead?", answers: [ { text: "Pb", correct: true }, { text: "Ld", correct: false }, { text: "Le", correct: false }, { text: "Pd", correct: false } ] },
+    { question: "Which country is the largest archipelago in the world?", answers: [ { text: "Indonesia", correct: true }, { text: "Philippines", correct: false }, { text: "Japan", correct: false }, { text: "Greece", correct: false } ] },
+    { question: "Who was the first man to step on the moon?", answers: [ { text: "Neil Armstrong", correct: true }, { text: "Buzz Aldrin", correct: false }, { text: "Yuri Gagarin", correct: false }, { text: "Michael Collins", correct: false } ] },
+    { question: "Which football club is known as 'The Blues'?", answers: [ { text: "Chelsea", correct: true }, { text: "Manchester City", correct: false }, { text: "Everton", correct: false }, { text: "Leicester City", correct: false } ] },
+    { question: "What is the largest ocean on Earth?", answers: [ { text: "Pacific", correct: true }, { text: "Atlantic", correct: false }, { text: "Indian", correct: false }, { text: "Arctic", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup as both player and coach?", answers: [ { text: "Mario Zagallo", correct: true }, { text: "Franz Beckenbauer", correct: false }, { text: "Didier Deschamps", correct: false }, { text: "Zinedine Zidane", correct: false } ] },
+    { question: "What is the capital of Canada?", answers: [ { text: "Ottawa", correct: true }, { text: "Toronto", correct: false }, { text: "Vancouver", correct: false }, { text: "Montreal", correct: false } ] },
+    { question: "Which country is the largest exporter of oil?", answers: [ { text: "Saudi Arabia", correct: true }, { text: "Russia", correct: false }, { text: "USA", correct: false }, { text: "Canada", correct: false } ] },
+    { question: "Who is the only player to win the Ballon d'Or, FIFA World Player of the Year, and UEFA Best Player in the same year?", answers: [ { text: "Cristiano Ronaldo", correct: true }, { text: "Lionel Messi", correct: false }, { text: "Ronaldinho", correct: false }, { text: "Luka Modric", correct: false } ] },
+    { question: "What is the smallest country in the world?", answers: [ { text: "Vatican City", correct: true }, { text: "Monaco", correct: false }, { text: "Nauru", correct: false }, { text: "San Marino", correct: false } ] },
+    { question: "Which footballer is known as 'The Flea'?", answers: [ { text: "Lionel Messi", correct: true }, { text: "Cristiano Ronaldo", correct: false }, { text: "Neymar", correct: false }, { text: "Kylian Mbappe", correct: false } ] },
+    { question: "What is the chemical symbol for mercury?", answers: [ { text: "Hg", correct: true }, { text: "Mc", correct: false }, { text: "Me", correct: false }, { text: "Mr", correct: false } ] },
+    { question: "Which country is the largest democracy in the world?", answers: [ { text: "India", correct: true }, { text: "USA", correct: false }, { text: "Brazil", correct: false }, { text: "Indonesia", correct: false } ] },
+    { question: "Who was the first female Prime Minister of the UK?", answers: [ { text: "Margaret Thatcher", correct: true }, { text: "Theresa May", correct: false }, { text: "Elizabeth II", correct: false }, { text: "Angela Merkel", correct: false } ] },
+    { question: "Which footballer is known as 'The Black Panther'?", answers: [ { text: "Eusebio", correct: true }, { text: "Pele", correct: false }, { text: "George Weah", correct: false }, { text: "Samuel Eto'o", correct: false } ] },
+    { question: "What is the largest lake in Africa?", answers: [ { text: "Lake Victoria", correct: true }, { text: "Lake Tanganyika", correct: false }, { text: "Lake Malawi", correct: false }, { text: "Lake Chad", correct: false } ] },
+    { question: "Who is the only player to win the UEFA Champions League as both player and manager?", answers: [ { text: "Zinedine Zidane", correct: true }, { text: "Pep Guardiola", correct: false }, { text: "Carlo Ancelotti", correct: false }, { text: "Frank Lampard", correct: false } ] },
+    { question: "What is the capital of Turkey?", answers: [ { text: "Ankara", correct: true }, { text: "Istanbul", correct: false }, { text: "Izmir", correct: false }, { text: "Bursa", correct: false } ] },
+    { question: "Which country is the largest producer of cocoa?", answers: [ { text: "Ivory Coast", correct: true }, { text: "Ghana", correct: false }, { text: "Nigeria", correct: false }, { text: "Cameroon", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup Golden Boot and Golden Ball in the same tournament?", answers: [ { text: "Ronaldo (Brazil)", correct: true }, { text: "Pele", correct: false }, { text: "Maradona", correct: false }, { text: "Zidane", correct: false } ] },
+    { question: "What is the largest island in the Mediterranean Sea?", answers: [ { text: "Sicily", correct: true }, { text: "Sardinia", correct: false }, { text: "Cyprus", correct: false }, { text: "Crete", correct: false } ] },
+    { question: "Which footballer is known as 'The King'?", answers: [ { text: "Pele", correct: true }, { text: "Maradona", correct: false }, { text: "Zidane", correct: false }, { text: "Ronaldo", correct: false } ] },
+    { question: "What is the chemical symbol for sodium?", answers: [ { text: "Na", correct: true }, { text: "So", correct: false }, { text: "S", correct: false }, { text: "N", correct: false } ] },
+    { question: "Which country is the largest peninsula in the world?", answers: [ { text: "Arabian Peninsula", correct: true }, { text: "Iberian Peninsula", correct: false }, { text: "Scandinavian Peninsula", correct: false }, { text: "Balkan Peninsula", correct: false } ] },
+    { question: "Who was the first African to win the Nobel Peace Prize?", answers: [ { text: "Albert Lutuli", correct: true }, { text: "Nelson Mandela", correct: false }, { text: "Desmond Tutu", correct: false }, { text: "Kofi Annan", correct: false } ] },
+    { question: "Which footballer is known as 'The Atomic Flea'?", answers: [ { text: "Lionel Messi", correct: true }, { text: "Cristiano Ronaldo", correct: false }, { text: "Neymar", correct: false }, { text: "Kylian Mbappe", correct: false } ] },
+    { question: "What is the largest waterfall in the world?", answers: [ { text: "Victoria Falls", correct: true }, { text: "Niagara Falls", correct: false }, { text: "Iguazu Falls", correct: false }, { text: "Angel Falls", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup as captain and coach?", answers: [ { text: "Franz Beckenbauer", correct: true }, { text: "Mario Zagallo", correct: false }, { text: "Didier Deschamps", correct: false }, { text: "Zinedine Zidane", correct: false } ] },
+    { question: "What is the capital of Switzerland?", answers: [ { text: "Bern", correct: true }, { text: "Zurich", correct: false }, { text: "Geneva", correct: false }, { text: "Basel", correct: false } ] },
+    { question: "Which country is the largest producer of diamonds?", answers: [ { text: "Russia", correct: true }, { text: "Botswana", correct: false }, { text: "Canada", correct: false }, { text: "South Africa", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup Golden Ball twice?", answers: [ { text: "Lionel Messi", correct: true }, { text: "Pele", correct: false }, { text: "Maradona", correct: false }, { text: "Ronaldo", correct: false } ] },
+    { question: "What is the largest bay in the world?", answers: [ { text: "Bay of Bengal", correct: true }, { text: "Hudson Bay", correct: false }, { text: "San Francisco Bay", correct: false }, { text: "Bay of Biscay", correct: false } ] },
+    { question: "Which footballer is known as 'The Maestro'?", answers: [ { text: "Andrea Pirlo", correct: true }, { text: "Xavi", correct: false }, { text: "Iniesta", correct: false }, { text: "Modric", correct: false } ] },
+    { question: "What is the chemical symbol for iron?", answers: [ { text: "Fe", correct: true }, { text: "Ir", correct: false }, { text: "In", correct: false }, { text: "Io", correct: false } ] },
+    { question: "Which country is the largest landlocked country in the world?", answers: [ { text: "Kazakhstan", correct: true }, { text: "Mongolia", correct: false }, { text: "Chad", correct: false }, { text: "Bolivia", correct: false } ] },
+    { question: "Who was the first African to win the Nobel Prize in Literature?", answers: [ { text: "Wole Soyinka", correct: true }, { text: "Chinua Achebe", correct: false }, { text: "Ngugi wa Thiong'o", correct: false }, { text: "Nadine Gordimer", correct: false } ] },
+    { question: "Which footballer is known as 'The Phenomenon'?", answers: [ { text: "Ronaldo Nazario", correct: true }, { text: "Ronaldinho", correct: false }, { text: "Kaka", correct: false }, { text: "Romario", correct: false } ] },
+    { question: "What is the largest river in Africa?", answers: [ { text: "Nile", correct: true }, { text: "Congo", correct: false }, { text: "Niger", correct: false }, { text: "Zambezi", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup Golden Glove twice?", answers: [ { text: "Manuel Neuer", correct: true }, { text: "Gianluigi Buffon", correct: false }, { text: "Iker Casillas", correct: false }, { text: "Peter Schmeichel", correct: false } ] },
+    { question: "What is the capital of Finland?", answers: [ { text: "Helsinki", correct: true }, { text: "Oslo", correct: false }, { text: "Stockholm", correct: false }, { text: "Copenhagen", correct: false } ] },
+    { question: "Which country is the largest producer of gold?", answers: [ { text: "China", correct: true }, { text: "Australia", correct: false }, { text: "Russia", correct: false }, { text: "USA", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup Golden Boot and Golden Ball in the same tournament?", answers: [ { text: "Ronaldo (Brazil)", correct: true }, { text: "Pele", correct: false }, { text: "Maradona", correct: false }, { text: "Zidane", correct: false } ] },
+    { question: "What is the largest island in the Mediterranean Sea?", answers: [ { text: "Sicily", correct: true }, { text: "Sardinia", correct: false }, { text: "Cyprus", correct: false }, { text: "Crete", correct: false } ] },
+    { question: "Which footballer is known as 'The King'?", answers: [ { text: "Pele", correct: true }, { text: "Maradona", correct: false }, { text: "Zidane", correct: false }, { text: "Ronaldo", correct: false } ] },
+    { question: "What is the chemical symbol for sodium?", answers: [ { text: "Na", correct: true }, { text: "So", correct: false }, { text: "S", correct: false }, { text: "N", correct: false } ] },
+    { question: "Which country is the largest peninsula in the world?", answers: [ { text: "Arabian Peninsula", correct: true }, { text: "Iberian Peninsula", correct: false }, { text: "Scandinavian Peninsula", correct: false }, { text: "Balkan Peninsula", correct: false } ] },
+    { question: "Who was the first African to win the Nobel Peace Prize?", answers: [ { text: "Albert Lutuli", correct: true }, { text: "Nelson Mandela", correct: false }, { text: "Desmond Tutu", correct: false }, { text: "Kofi Annan", correct: false } ] },
+    { question: "Which footballer is known as 'The Atomic Flea'?", answers: [ { text: "Lionel Messi", correct: true }, { text: "Cristiano Ronaldo", correct: false }, { text: "Neymar", correct: false }, { text: "Kylian Mbappe", correct: false } ] },
+    { question: "What is the largest waterfall in the world?", answers: [ { text: "Victoria Falls", correct: true }, { text: "Niagara Falls", correct: false }, { text: "Iguazu Falls", correct: false }, { text: "Angel Falls", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup as captain and coach?", answers: [ { text: "Franz Beckenbauer", correct: true }, { text: "Mario Zagallo", correct: false }, { text: "Didier Deschamps", correct: false }, { text: "Zinedine Zidane", correct: false } ] },
+    { question: "What is the capital of Switzerland?", answers: [ { text: "Bern", correct: true }, { text: "Zurich", correct: false }, { text: "Geneva", correct: false }, { text: "Basel", correct: false } ] },
+    { question: "Which country is the largest producer of diamonds?", answers: [ { text: "Russia", correct: true }, { text: "Botswana", correct: false }, { text: "Canada", correct: false }, { text: "South Africa", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup Golden Ball twice?", answers: [ { text: "Lionel Messi", correct: true }, { text: "Pele", correct: false }, { text: "Maradona", correct: false }, { text: "Ronaldo", correct: false } ] },
+    { question: "What is the largest bay in the world?", answers: [ { text: "Bay of Bengal", correct: true }, { text: "Hudson Bay", correct: false }, { text: "San Francisco Bay", correct: false }, { text: "Bay of Biscay", correct: false } ] },
+    { question: "Which footballer is known as 'The Maestro'?", answers: [ { text: "Andrea Pirlo", correct: true }, { text: "Xavi", correct: false }, { text: "Iniesta", correct: false }, { text: "Modric", correct: false } ] },
+    { question: "What is the chemical symbol for iron?", answers: [ { text: "Fe", correct: true }, { text: "Ir", correct: false }, { text: "In", correct: false }, { text: "Io", correct: false } ] },
+    { question: "Which country is the largest landlocked country in the world?", answers: [ { text: "Kazakhstan", correct: true }, { text: "Mongolia", correct: false }, { text: "Chad", correct: false }, { text: "Bolivia", correct: false } ] },
+    { question: "Who was the first African to win the Nobel Prize in Literature?", answers: [ { text: "Wole Soyinka", correct: true }, { text: "Chinua Achebe", correct: false }, { text: "Ngugi wa Thiong'o", correct: false }, { text: "Nadine Gordimer", correct: false } ] },
+    { question: "Which footballer is known as 'The Phenomenon'?", answers: [ { text: "Ronaldo Nazario", correct: true }, { text: "Ronaldinho", correct: false }, { text: "Kaka", correct: false }, { text: "Romario", correct: false } ] },
+    { question: "What is the largest river in Africa?", answers: [ { text: "Nile", correct: true }, { text: "Congo", correct: false }, { text: "Niger", correct: false }, { text: "Zambezi", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup Golden Glove twice?", answers: [ { text: "Manuel Neuer", correct: true }, { text: "Gianluigi Buffon", correct: false }, { text: "Iker Casillas", correct: false }, { text: "Peter Schmeichel", correct: false } ] },
+    { question: "What is the capital of Finland?", answers: [ { text: "Helsinki", correct: true }, { text: "Oslo", correct: false }, { text: "Stockholm", correct: false }, { text: "Copenhagen", correct: false } ] },
+    { question: "Which country is the largest producer of gold?", answers: [ { text: "China", correct: true }, { text: "Australia", correct: false }, { text: "Russia", correct: false }, { text: "USA", correct: false } ] },
 ];
+const mediumQuestions = [
+    { question: "Which team won the 2018 FIFA World Cup?", answers: [ { text: "France", correct: true }, { text: "Croatia", correct: false }, { text: "Brazil", correct: false }, { text: "Germany", correct: false } ] },
+    { question: "Who is the all-time top scorer in the English Premier League?", answers: [ { text: "Alan Shearer", correct: true }, { text: "Wayne Rooney", correct: false }, { text: "Sergio Aguero", correct: false }, { text: "Thierry Henry", correct: false } ] },
+    { question: "What is the chemical symbol for potassium?", answers: [ { text: "K", correct: true }, { text: "P", correct: false }, { text: "Pt", correct: false }, { text: "Po", correct: false } ] },
+    { question: "What is the capital of Spain?", answers: [ { text: "Madrid", correct: true }, { text: "Barcelona", correct: false }, { text: "Valencia", correct: false }, { text: "Seville", correct: false } ] },
+    { question: "Which continent is the Sahara Desert located in?", answers: [ { text: "Africa", correct: true }, { text: "Asia", correct: false }, { text: "Australia", correct: false }, { text: "Europe", correct: false } ] },
+    { question: "Who invented the telephone?", answers: [ { text: "Alexander Graham Bell", correct: true }, { text: "Thomas Edison", correct: false }, { text: "Nikola Tesla", correct: false }, { text: "Guglielmo Marconi", correct: false } ] },
+    { question: "What is the largest island in the world?", answers: [ { text: "Greenland", correct: true }, { text: "Australia", correct: false }, { text: "Borneo", correct: false }, { text: "Madagascar", correct: false } ] },
+    { question: "Which element has the chemical symbol 'O'?", answers: [ { text: "Oxygen", correct: true }, { text: "Gold", correct: false }, { text: "Osmium", correct: false }, { text: "Oganesson", correct: false } ] },
+    { question: "Who wrote 'Romeo and Juliet'?", answers: [ { text: "William Shakespeare", correct: true }, { text: "Charles Dickens", correct: false }, { text: "Jane Austen", correct: false }, { text: "Mark Twain", correct: false } ] },
+    { question: "What is the largest country in South America?", answers: [ { text: "Brazil", correct: true }, { text: "Argentina", correct: false }, { text: "Colombia", correct: false }, { text: "Peru", correct: false } ] },
+    { question: "Which planet is known for its rings?", answers: [ { text: "Saturn", correct: true }, { text: "Jupiter", correct: false }, { text: "Uranus", correct: false }, { text: "Neptune", correct: false } ] },
+    { question: "What is the hardest natural substance on Earth?", answers: [ { text: "Diamond", correct: true }, { text: "Gold", correct: false }, { text: "Iron", correct: false }, { text: "Silver", correct: false } ] },
+    { question: "Who discovered gravity?", answers: [ { text: "Isaac Newton", correct: true }, { text: "Albert Einstein", correct: false }, { text: "Galileo Galilei", correct: false }, { text: "Marie Curie", correct: false } ] },
+    { question: "What is the capital of Kenya?", answers: [ { text: "Nairobi", correct: true }, { text: "Mombasa", correct: false }, { text: "Kisumu", correct: false }, { text: "Eldoret", correct: false } ] },
+    { question: "Which river is the longest in the world?", answers: [ { text: "Nile", correct: true }, { text: "Amazon", correct: false }, { text: "Yangtze", correct: false }, { text: "Mississippi", correct: false } ] },
+    { question: "Who painted the Starry Night?", answers: [ { text: "Vincent van Gogh", correct: true }, { text: "Pablo Picasso", correct: false }, { text: "Claude Monet", correct: false }, { text: "Leonardo da Vinci", correct: false } ] },
+    { question: "What is the largest desert in the world?", answers: [ { text: "Antarctic", correct: true }, { text: "Sahara", correct: false }, { text: "Gobi", correct: false }, { text: "Kalahari", correct: false } ] },
+    { question: "Which country is known as the Land of the Rising Sun?", answers: [ { text: "Japan", correct: true }, { text: "China", correct: false }, { text: "Thailand", correct: false }, { text: "India", correct: false } ] },
+    { question: "Who is the author of 'Harry Potter'?", answers: [ { text: "J.K. Rowling", correct: true }, { text: "J.R.R. Tolkien", correct: false }, { text: "Stephen King", correct: false }, { text: "Roald Dahl", correct: false } ] },
+    { question: "What is the capital of Australia?", answers: [ { text: "Canberra", correct: true }, { text: "Sydney", correct: false }, { text: "Melbourne", correct: false }, { text: "Perth", correct: false } ] },
+    { question: "Which gas do plants absorb from the atmosphere?", answers: [ { text: "Carbon Dioxide", correct: true }, { text: "Oxygen", correct: false }, { text: "Nitrogen", correct: false }, { text: "Hydrogen", correct: false } ] },
+    { question: "Which football club is nicknamed 'The Red Devils'?", answers: [ { text: "Manchester United", correct: true }, { text: "Liverpool", correct: false }, { text: "Arsenal", correct: false }, { text: "Chelsea", correct: false } ] },
+    { question: "What is the largest planet in our solar system?", answers: [ { text: "Jupiter", correct: true }, { text: "Saturn", correct: false }, { text: "Earth", correct: false }, { text: "Mars", correct: false } ] },
+    { question: "Who is the all-time top scorer in the English Premier League?", answers: [ { text: "Alan Shearer", correct: true }, { text: "Wayne Rooney", correct: false }, { text: "Sergio Aguero", correct: false }, { text: "Thierry Henry", correct: false } ] },
+    { question: "What is the chemical symbol for sodium?", answers: [ { text: "Na", correct: true }, { text: "So", correct: false }, { text: "S", correct: false }, { text: "N", correct: false } ] },
+    { question: "Which country is the largest peninsula in the world?", answers: [ { text: "Arabian Peninsula", correct: true }, { text: "Iberian Peninsula", correct: false }, { text: "Scandinavian Peninsula", correct: false }, { text: "Balkan Peninsula", correct: false } ] },
+    { question: "Who was the first African to win the Nobel Peace Prize?", answers: [ { text: "Albert Lutuli", correct: true }, { text: "Nelson Mandela", correct: false }, { text: "Desmond Tutu", correct: false }, { text: "Kofi Annan", correct: false } ] },
+    { question: "Which footballer is known as 'The Atomic Flea'?", answers: [ { text: "Lionel Messi", correct: true }, { text: "Cristiano Ronaldo", correct: false }, { text: "Neymar", correct: false }, { text: "Kylian Mbappe", correct: false } ] },
+    { question: "What is the largest waterfall in the world?", answers: [ { text: "Victoria Falls", correct: true }, { text: "Niagara Falls", correct: false }, { text: "Iguazu Falls", correct: false }, { text: "Angel Falls", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup as captain and coach?", answers: [ { text: "Franz Beckenbauer", correct: true }, { text: "Mario Zagallo", correct: false }, { text: "Didier Deschamps", correct: false }, { text: "Zinedine Zidane", correct: false } ] },
+    { question: "What is the capital of Switzerland?", answers: [ { text: "Bern", correct: true }, { text: "Zurich", correct: false }, { text: "Geneva", correct: false }, { text: "Basel", correct: false } ] },
+    { question: "Which country is the largest producer of diamonds?", answers: [ { text: "Russia", correct: true }, { text: "Botswana", correct: false }, { text: "Canada", correct: false }, { text: "South Africa", correct: false } ] },
+    { question: "Who is the only player to win the FIFA World Cup Golden Ball twice?", answers: [ { text: "Lionel Messi", correct: true }, { text: "Pele", correct: false }, { text: "Maradona", correct: false }, { text: "Ronaldo", correct: false } ] },
+    { question: "What is the largest bay in the world?", answers: [ { text: "Bay of Bengal", correct: true }, { text: "Hudson Bay", correct: false }, { text: "San Francisco Bay", correct: false }, { text: "Bay of Biscay", correct: false } ] },
+    { question: "Which footballer is known as 'The Maestro'?", answers: [ { text: "Andrea Pirlo", correct: true }, { text: "Xavi", correct: false }, { text: "Iniesta", correct: false }, { text: "Modric", correct: false } ] },
+    { question: "What is the chemical symbol for iron?", answers: [ { text: "Fe", correct: true }, { text: "Ir", correct: false }, { text: "In", correct: false }, { text: "Io", correct: false } ] },
+];
+const easyQuestions = [
+    { question: "What is the capital of France?", answers: [ { text: "Paris", correct: true }, { text: "Berlin", correct: false }, { text: "Madrid", correct: false }, { text: "Lisbon", correct: false } ] },
+    { question: "Which is the largest animal in the world?", answers: [ { text: "Blue whale", correct: true }, { text: "Shark", correct: false }, { text: "Elephant", correct: false }, { text: "Giraffe", correct: false } ] },
+    { question: "Which planet is known as the Red Planet?", answers: [ { text: "Mars", correct: true }, { text: "Earth", correct: false }, { text: "Jupiter", correct: false }, { text: "Saturn", correct: false } ] },
+    { question: "Who is known as the Father of Computers?", answers: [ { text: "Charles Babbage", correct: true }, { text: "Alan Turing", correct: false }, { text: "Bill Gates", correct: false }, { text: "Steve Jobs", correct: false } ] },
+    { question: "Which country won the 2014 FIFA World Cup?", answers: [ { text: "Germany", correct: true }, { text: "Argentina", correct: false }, { text: "Brazil", correct: false }, { text: "Netherlands", correct: false } ] },
+    { question: "What is the boiling point of water?", answers: [ { text: "100°C", correct: true }, { text: "90°C", correct: false }, { text: "80°C", correct: false }, { text: "120°C", correct: false } ] },
+    { question: "Who painted the Mona Lisa?", answers: [ { text: "Leonardo da Vinci", correct: true }, { text: "Vincent Van Gogh", correct: false }, { text: "Pablo Picasso", correct: false }, { text: "Claude Monet", correct: false } ] },
+    { question: "Which footballer is called 'CR7'?", answers: [ { text: "Cristiano Ronaldo", correct: true }, { text: "Lionel Messi", correct: false }, { text: "Neymar", correct: false }, { text: "Kylian Mbappe", correct: false } ] },
+    { question: "What is the main language spoken in Brazil?", answers: [ { text: "Portuguese", correct: true }, { text: "Spanish", correct: false }, { text: "French", correct: false }, { text: "English", correct: false } ] },
+    { question: "Which country is known as the Land of a Thousand Lakes?", answers: [ { text: "Finland", correct: true }, { text: "Sweden", correct: false }, { text: "Norway", correct: false }, { text: "Denmark", correct: false } ] },
+    { question: "What is the tallest mountain in the world?", answers: [ { text: "Mount Everest", correct: true }, { text: "K2", correct: false }, { text: "Kangchenjunga", correct: false }, { text: "Lhotse", correct: false } ] },
+    { question: "Which continent is Egypt located in?", answers: [ { text: "Africa", correct: true }, { text: "Asia", correct: false }, { text: "Europe", correct: false }, { text: "South America", correct: false } ] },
+    { question: "What is the largest ocean on Earth?", answers: [ { text: "Pacific Ocean", correct: true }, { text: "Atlantic Ocean", correct: false }, { text: "Indian Ocean", correct: false }, { text: "Arctic Ocean", correct: false } ] },
+    { question: "How many days are there in a leap year?", answers: [ { text: "366", correct: true }, { text: "365", correct: false }, { text: "364", correct: false }, { text: "360", correct: false } ] },
+    { question: "What is the largest organ in the human body?", answers: [ { text: "Skin", correct: true }, { text: "Liver", correct: false }, { text: "Heart", correct: false }, { text: "Lung", correct: false } ] },
+    { question: "Which instrument has keys, pedals, and strings?", answers: [ { text: "Piano", correct: true }, { text: "Guitar", correct: false }, { text: "Violin", correct: false }, { text: "Drum", correct: false } ] },
+    { question: "What is the currency of Japan?", answers: [ { text: "Yen", correct: true }, { text: "Won", correct: false }, { text: "Dollar", correct: false }, { text: "Euro", correct: false } ] },
+    { question: "Which gas do humans need to breathe?", answers: [ { text: "Oxygen", correct: true }, { text: "Carbon Dioxide", correct: false }, { text: "Nitrogen", correct: false }, { text: "Hydrogen", correct: false } ] },
+    { question: "What color do you get when you mix red and white?", answers: [ { text: "Pink", correct: true }, { text: "Purple", correct: false }, { text: "Orange", correct: false }, { text: "Brown", correct: false } ] },
+    { question: "Which planet is closest to the sun?", answers: [ { text: "Mercury", correct: true }, { text: "Venus", correct: false }, { text: "Earth", correct: false }, { text: "Mars", correct: false } ] },
+    { question: "How many continents are there?", answers: [ { text: "7", correct: true }, { text: "5", correct: false }, { text: "6", correct: false }, { text: "8", correct: false } ] },
+    { question: "What is the largest mammal on land?", answers: [ { text: "Elephant", correct: true }, { text: "Giraffe", correct: false }, { text: "Hippopotamus", correct: false }, { text: "Rhinoceros", correct: false } ] },
+    { question: "Which country is famous for pizza and pasta?", answers: [ { text: "Italy", correct: true }, { text: "France", correct: false }, { text: "Spain", correct: false }, { text: "Greece", correct: false } ] },
+    { question: "What is the freezing point of water?", answers: [ { text: "0°C", correct: true }, { text: "32°C", correct: false }, { text: "100°C", correct: false }, { text: "-10°C", correct: false } ] },
+    { question: "Which animal is known as the King of the Jungle?", answers: [ { text: "Lion", correct: true }, { text: "Tiger", correct: false }, { text: "Elephant", correct: false }, { text: "Leopard", correct: false } ] },
+    { question: "What is the main ingredient in bread?", answers: [ { text: "Flour", correct: true }, { text: "Sugar", correct: false }, { text: "Salt", correct: false }, { text: "Butter", correct: false } ] },
+    { question: "Which shape has three sides?", answers: [ { text: "Triangle", correct: true }, { text: "Square", correct: false }, { text: "Circle", correct: false }, { text: "Rectangle", correct: false } ] },
+    { question: "What is the capital city of Nigeria?", answers: [ { text: "Abuja", correct: true }, { text: "Lagos", correct: false }, { text: "Kano", correct: false }, { text: "Port Harcourt", correct: false } ] },
+    { question: "Which fruit is yellow and curved?", answers: [ { text: "Banana", correct: true }, { text: "Apple", correct: false }, { text: "Orange", correct: false }, { text: "Grape", correct: false } ] },
+    { question: "What do bees make?", answers: [ { text: "Honey", correct: true }, { text: "Milk", correct: false }, { text: "Wax", correct: false }, { text: "Bread", correct: false } ] },
+    { question: "Which month comes after June?", answers: [ { text: "July", correct: true }, { text: "August", correct: false }, { text: "May", correct: false }, { text: "September", correct: false } ] },
+    { question: "What is the opposite of 'hot'?", answers: [ { text: "Cold", correct: true }, { text: "Warm", correct: false }, { text: "Cool", correct: false }, { text: "Boiling", correct: false } ] },
+    { question: "Which animal barks?", answers: [ { text: "Dog", correct: true }, { text: "Cat", correct: false }, { text: "Cow", correct: false }, { text: "Sheep", correct: false } ] },
+    { question: "What is H2O commonly known as?", answers: [ { text: "Water", correct: true }, { text: "Oxygen", correct: false }, { text: "Hydrogen", correct: false }, { text: "Salt", correct: false } ] },
+    { question: "Which day comes after Friday?", answers: [ { text: "Saturday", correct: true }, { text: "Sunday", correct: false }, { text: "Monday", correct: false }, { text: "Thursday", correct: false } ] },
+    { question: "What is the color of the sky on a clear day?", answers: [ { text: "Blue", correct: true }, { text: "Green", correct: false }, { text: "Red", correct: false }, { text: "Yellow", correct: false } ] },
+    { question: "Which animal is known for its trunk?", answers: [ { text: "Elephant", correct: true }, { text: "Lion", correct: false }, { text: "Horse", correct: false }, { text: "Dog", correct: false } ] },
+    { question: "How many legs does a spider have?", answers: [ { text: "8", correct: true }, { text: "6", correct: false }, { text: "4", correct: false }, { text: "10", correct: false } ] },
+    { question: "What is the name of our galaxy?", answers: [ { text: "Milky Way", correct: true }, { text: "Andromeda", correct: false }, { text: "Solar System", correct: false }, { text: "Orion", correct: false } ] },
+    { question: "Which vegetable is orange and long?", answers: [ { text: "Carrot", correct: true }, { text: "Potato", correct: false }, { text: "Tomato", correct: false }, { text: "Cucumber", correct: false } ] },
+    { question: "What do you call a baby cat?", answers: [ { text: "Kitten", correct: true }, { text: "Puppy", correct: false }, { text: "Cub", correct: false }, { text: "Calf", correct: false } ] },
+    { question: "Which season comes after summer?", answers: [ { text: "Autumn", correct: true }, { text: "Winter", correct: false }, { text: "Spring", correct: false }, { text: "Rainy", correct: false } ] },
+    { question: "What is the fastest land animal?", answers: [ { text: "Cheetah", correct: true }, { text: "Lion", correct: false }, { text: "Horse", correct: false }, { text: "Tiger", correct: false } ] },
+    { question: "Which bird is known for its colorful tail?", answers: [ { text: "Peacock", correct: true }, { text: "Sparrow", correct: false }, { text: "Crow", correct: false }, { text: "Pigeon", correct: false } ] },
+    { question: "What is the main source of energy for the Earth?", answers: [ { text: "Sun", correct: true }, { text: "Moon", correct: false }, { text: "Wind", correct: false }, { text: "Water", correct: false } ] },
+    { question: "Which shape is round?", answers: [ { text: "Circle", correct: true }, { text: "Square", correct: false }, { text: "Triangle", correct: false }, { text: "Rectangle", correct: false } ] },
+    { question: "What is the name of the fairy in Peter Pan?", answers: [ { text: "Tinker Bell", correct: true }, { text: "Cinderella", correct: false }, { text: "Ariel", correct: false }, { text: "Belle", correct: false } ] },
+    { question: "Which animal is known for building dams?", answers: [ { text: "Beaver", correct: true }, { text: "Otter", correct: false }, { text: "Rabbit", correct: false }, { text: "Squirrel", correct: false } ] },
+    { question: "What is the largest planet in our solar system?", answers: [ { text: "Jupiter", correct: true }, { text: "Saturn", correct: false }, { text: "Earth", correct: false }, { text: "Mars", correct: false } ] },
+    { question: "Which country is known as the Land of the Rising Sun?", answers: [ { text: "Japan", correct: true }, { text: "China", correct: false }, { text: "Thailand", correct: false }, { text: "India", correct: false } ] },
+];
+
+// Select questions based on stake amount
+function getQuestionsForStake(stake) {
+    if (stake < 5000) return shuffleArray(hardQuestions).slice(0, 70);
+    if (stake <= 15000) return shuffleArray(mediumQuestions).slice(0, 35);
+    return shuffleArray(easyQuestions).slice(0, 40);
+}
+
+let questions = getQuestionsForStake(stakeAmount);
 
 // DOM elements already initialized at the top of the file
 
@@ -956,6 +678,9 @@ function startQuiz(){
     nextButton.style.display = "none";
     claimRewardButton.style.display = "none";
     payoutForm.style.display = "none";
+    
+    // Always refresh questions based on current stake
+    questions = getQuestionsForStake(stakeAmount);
     
     // Disable anti-cheating at the start
     disableAntiCheating();
@@ -1293,7 +1018,7 @@ submitPayoutBtn.addEventListener("click", async () => {
             const percentage = Math.round((score / questions.length) * 100);
             const rewardAmount = calculateReward(percentage);
             
-            alert(`Submission successful! You will receive your ₦${rewardAmount} reward in 20-40 minutes.`);
+            alert(`Submission successful! You will receive your ₦${rewardAmount} reward in 24hrs.`);
             payoutForm.style.display = "none";
             claimingReward = false;
         } else {
