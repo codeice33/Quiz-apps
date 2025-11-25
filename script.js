@@ -1,6 +1,8 @@
 // IMPORTANT: Set this to your backend's deployed URL
 const ONLINE_BACKEND = 'https://quiz-appi.onrender.com'; // <-- Backend deployed on Render
 
+// Using fixed backend URL from ONLINE_BACKEND constant (no local override)
+
 // Global variables for payment and quiz state
 let quizEndedForCheating = false;
 let claimingReward = false;
@@ -823,7 +825,40 @@ function showscore(){
         claimRewardButton.style.display = "none";
     }
     
-    // Reset the staking status after quiz completion so user needs to pay again
+    // Record score to leaderboard (non-blocking)
+    (async () => {
+        try {
+            // Use existing userName if available, otherwise ask for a display name
+            let displayName = userName && userName.trim() ? userName : null;
+            if (!displayName) {
+                displayName = prompt('Enter a display name for the leaderboard (or leave empty to remain anonymous):');
+                if (displayName) {
+                    userName = displayName;
+                }
+            }
+
+            const payload = {
+                name: displayName || 'Anonymous',
+                score: score,
+                total_questions: questions.length,
+                email: userEmail || undefined,
+                score_percentage: percentage
+            };
+
+            // Fire-and-forget, don't block the UI. Log errors quietly.
+            fetch(ONLINE_BACKEND + '/record-score', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(res => {
+                if (!res.ok) console.warn('Recording score returned', res.status);
+                return res.json().catch(() => ({}));
+            }).then(data => console.log('Recorded score response:', data)).catch(err => console.warn('Record score failed:', err));
+        } catch (err) {
+            console.warn('Leaderboard recording error:', err);
+        }
+    })();
+
     hasStakedMoney = false;
 }
 
@@ -926,6 +961,101 @@ async function testServerConnection(apiUrl) {
         return false;
     }
 }
+
+// User-facing leaderboard functions
+async function fetchUserLeaderboard() {
+    try {
+        // Show loading placeholders
+        const topList = document.getElementById('user-leaderboard-top');
+        const winnersList = document.getElementById('user-leaderboard-winners');
+        if (topList) topList.innerHTML = '<li style="padding:8px;color:#888">Loading...</li>';
+        if (winnersList) winnersList.innerHTML = '<li style="padding:8px;color:#888">Loading...</li>';
+
+        // Timeout-aware fetch
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+        const res = await fetch(ONLINE_BACKEND + '/leaderboard', { signal: controller.signal });
+        clearTimeout(timeout);
+
+        if (!res.ok) {
+            throw new Error('HTTP ' + res.status + ' - ' + res.statusText);
+        }
+
+        const data = await res.json();
+
+        // Clear lists for fresh data
+        if (topList) topList.innerHTML = '';
+        if (winnersList) winnersList.innerHTML = '';
+
+        if (data && Array.isArray(data.topScorers) && data.topScorers.length) {
+            data.topScorers.forEach((item, idx) => {
+                const li = document.createElement('li');
+                li.style.padding = '8px 6px';
+                li.style.borderBottom = '1px solid #e9ecef';
+                // compute safe percentage
+                let pct = item.score_percentage;
+                if ((pct === undefined || pct === null || isNaN(pct)) && item.total_questions && item.total_questions > 0) {
+                    pct = Math.round((Number(item.score) / Number(item.total_questions)) * 100);
+                }
+                const pctText = (pct === undefined || pct === null || isNaN(pct)) ? 'N/A' : pct + '%';
+                li.innerHTML = `<strong>${idx + 1}. ${escapeHtml(item.name || 'Anonymous')}</strong><br><small>Score: ${item.score}/${item.total_questions || 'N/A'} (${pctText})</small>`;
+                topList.appendChild(li);
+            });
+        } else if (topList) {
+            topList.innerHTML = '<li style="padding:8px;color:#888">No top scorers yet.</li>';
+        }
+
+        if (data && Array.isArray(data.biggestWinners) && data.biggestWinners.length) {
+            data.biggestWinners.forEach((item) => {
+                const li = document.createElement('li');
+                li.style.padding = '8px 6px';
+                li.style.borderBottom = '1px solid #e9ecef';
+                li.innerHTML = `<strong>${escapeHtml(item.name || 'Anonymous')}</strong><br><small>Amount Paid: ₦${item.paidAmount || 0}</small>`;
+                winnersList.appendChild(li);
+            });
+        } else if (winnersList) {
+            winnersList.innerHTML = '<li style="padding:8px;color:#888">No winners yet.</li>';
+        }
+    } catch (err) {
+        console.warn('Failed to load leaderboard:', err);
+        const topList = document.getElementById('user-leaderboard-top');
+        const winnersList = document.getElementById('user-leaderboard-winners');
+        const message = err.name === 'AbortError' ? 'Request timed out. Try again.' : `Unable to load leaderboard: ${err.message}`;
+        if (topList) topList.innerHTML = `<li style="padding:8px;color:#888">${escapeHtml(message)}</li>`;
+        if (winnersList) winnersList.innerHTML = `<li style="padding:8px;color:#888">${escapeHtml(message)}</li>`;
+    }
+}
+
+// Basic HTML escape to avoid injection from server data
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+// Wire up user leaderboard UI interactions
+document.addEventListener('DOMContentLoaded', () => {
+    const viewBtn = document.getElementById('view-leaderboard-btn');
+    const panel = document.getElementById('user-leaderboard-panel');
+    const closeBtn = document.getElementById('close-leaderboard-btn');
+    const refreshBtn = document.getElementById('refresh-user-leaderboard');
+
+    if (viewBtn && panel) {
+        viewBtn.addEventListener('click', () => {
+            panel.style.display = 'block';
+            fetchUserLeaderboard();
+        });
+    }
+    if (closeBtn && panel) {
+        closeBtn.addEventListener('click', () => panel.style.display = 'none');
+    }
+    if (refreshBtn) {
+        refreshBtn.addEventListener('click', () => fetchUserLeaderboard());
+    }
+});
 
 submitPayoutBtn.addEventListener("click", async () => {
     const name = payoutName.value.trim();

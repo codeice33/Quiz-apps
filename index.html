@@ -49,8 +49,13 @@
                     <li>95-100% correct: 10x your stake</li>
                 </ul>
             </div>
+            
+            <!-- User Leaderboard Button -->
+            <div style="text-align:center;margin-top:18px;">
+                <button id="view-leaderboard-btn" style="background:#001e4d;color:#fff;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;font-weight:700;">View Leaderboard</button>
+            </div>
         </div>
-        
+
         <div id="payment-form" style="display:none; margin-top:20px;">
             <h2>Payment Details</h2>
             <p class="payment-info">Enter your details to stake <span id="stake-amount-display">₦500</span> and start the quiz</p>
@@ -110,6 +115,27 @@
     <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <script src="./script.js"></script>
+    
+    <!-- User Leaderboard Modal/Panel -->
+    <div id="user-leaderboard-panel" style="display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:92%;max-width:820px;background:#fff;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.2);z-index:2000;padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h3 style="margin:0;color:#001e4d;">Leaderboard</h3>
+            <button id="close-leaderboard-btn" style="background:none;border:0;font-size:22px;cursor:pointer;">×</button>
+        </div>
+        <div style="display:flex;gap:18px;flex-wrap:wrap;">
+            <div style="flex:1;min-width:260px;background:#f8f9fa;padding:12px;border-radius:8px;">
+                <h4 style="margin-top:0;color:#333;">Top Scorers</h4>
+                <ul id="user-leaderboard-top" style="list-style:none;padding:0;margin:0;max-height:320px;overflow:auto;"></ul>
+            </div>
+            <div style="flex:1;min-width:260px;background:#f8f9fa;padding:12px;border-radius:8px;">
+                <h4 style="margin-top:0;color:#333;">Biggest Winners</h4>
+                <ul id="user-leaderboard-winners" style="list-style:none;padding:0;margin:0;max-height:320px;overflow:auto;"></ul>
+            </div>
+        </div>
+        <div style="text-align:right;margin-top:12px;">
+            <button id="refresh-user-leaderboard" style="background:#28a745;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;font-weight:600;">Refresh</button>
+        </div>
+    </div>
 
     <!-- QUIZMASTER AI Assistant -->
     <div id="ai-assistant-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
@@ -291,5 +317,6 @@
             });
         }
     </script>
+    
 </body>
 </html>

@@ -26,6 +26,16 @@ function showStatus(message, type = 'info') {
 // IMPORTANT: Set this to your backend's deployed URL
 const ONLINE_BACKEND = 'https://quiz-appi.onrender.com'; // <-- Backend deployed on Render
 
+// Basic HTML escape to avoid injection from server data
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function fetchPayouts() {
     let apiUrl = ONLINE_BACKEND + '/manual-payouts';
     
@@ -105,13 +115,77 @@ function fetchPayouts() {
         });
 }
 
+// Fetch and render leaderboard data
+function fetchLeaderboard() {
+    const url = ONLINE_BACKEND + '/leaderboard';
+    console.log('Fetching leaderboard from:', url);
+    // show loading placeholders
+    const topList = document.getElementById('leaderboard-top');
+    const winnersList = document.getElementById('leaderboard-winners');
+    if (topList) topList.innerHTML = '<li style="padding:8px;color:#888">Loading...</li>';
+    if (winnersList) winnersList.innerHTML = '<li style="padding:8px;color:#888">Loading...</li>';
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    fetch(url, { signal: controller.signal })
+        .then(res => {
+            clearTimeout(timeoutId);
+            if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
+            return res.json();
+        })
+        .then(data => {
+            if (topList) topList.innerHTML = '';
+            if (winnersList) winnersList.innerHTML = '';
+
+            if (data && Array.isArray(data.topScorers) && data.topScorers.length) {
+                data.topScorers.forEach((item, idx) => {
+                    const li = document.createElement('li');
+                    li.style.padding = '8px 6px';
+                    li.style.borderBottom = '1px solid #e9ecef';
+                    let pct = item.score_percentage;
+                    if ((pct === undefined || pct === null || isNaN(pct)) && item.total_questions && item.total_questions > 0) {
+                        pct = Math.round((Number(item.score) / Number(item.total_questions)) * 100);
+                    }
+                    const pctText = (pct === undefined || pct === null || isNaN(pct)) ? 'N/A' : pct + '%';
+                    li.innerHTML = `<strong>${idx + 1}. ${escapeHtml(item.name || 'Anonymous')}</strong><br><small>Score: ${item.score}/${item.total_questions || 'N/A'} (${pctText})</small>`;
+                    topList.appendChild(li);
+                });
+            } else if (topList) {
+                topList.innerHTML = '<li style="padding:8px">No top scorers yet.</li>';
+            }
+
+            if (data && Array.isArray(data.biggestWinners) && data.biggestWinners.length) {
+                data.biggestWinners.forEach((item) => {
+                    const li = document.createElement('li');
+                    li.style.padding = '8px 6px';
+                    li.style.borderBottom = '1px solid #e9ecef';
+                    li.innerHTML = `<strong>${escapeHtml(item.name || 'Anonymous')}</strong><br><small>Amount Paid: ₦${item.paidAmount || 0}</small>`;
+                    winnersList.appendChild(li);
+                });
+            } else if (winnersList) {
+                winnersList.innerHTML = '<li style="padding:8px">No winners yet.</li>';
+            }
+        })
+        .catch(err => {
+            console.warn('Failed to fetch leaderboard:', err);
+            const msg = err.name === 'AbortError' ? 'Request timed out.' : `Unable to load leaderboard: ${err.message}`;
+            if (topList) topList.innerHTML = `<li style="padding:8px;color:#888">${escapeHtml(msg)}</li>`;
+            if (winnersList) winnersList.innerHTML = `<li style="padding:8px;color:#888">${escapeHtml(msg)}</li>`;
+        });
+}
+
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initial fetch of payouts
     fetchPayouts();
+    // Initial fetch of leaderboard
+    fetchLeaderboard();
     
     // Set up auto-refresh every 10 seconds
     setInterval(fetchPayouts, 10000);
+    // Refresh leaderboard every 15 seconds
+    setInterval(fetchLeaderboard, 15000);
     
     // Add refresh button functionality
     const refreshBtn = document.getElementById('refresh-btn');

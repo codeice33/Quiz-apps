@@ -76,6 +76,21 @@
         
         <ul id="payout-list" class="payout-list"></ul>
         <div id="no-payouts" class="no-payouts" style="display:none;">No payout requests yet.</div>
+        
+        <!-- Leaderboard Sections -->
+        <div style="margin-top:30px;">
+            <h3 style="text-align:center;margin-bottom:12px;color:#001e4d;">Leaderboard</h3>
+            <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:space-between;">
+                <div style="flex:1;min-width:260px;background:#f8f9fa;padding:12px;border-radius:8px;">
+                    <h4 style="margin-top:0;color:#333;">Top Scorers</h4>
+                    <ul id="leaderboard-top" style="list-style:none;padding:0;margin:0;max-height:280px;overflow:auto;"></ul>
+                </div>
+                <div style="flex:1;min-width:260px;background:#f8f9fa;padding:12px;border-radius:8px;">
+                    <h4 style="margin-top:0;color:#333;">Biggest Winners</h4>
+                    <ul id="leaderboard-winners" style="list-style:none;padding:0;margin:0;max-height:280px;overflow:auto;"></ul>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="admin.js"></script>
     <script>
