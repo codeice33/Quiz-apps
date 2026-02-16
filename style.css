@@ -692,3 +692,399 @@ body{
         font-size: 18px !important;
     }
 }
+
+/* =========================================================
+   MODERN THEME (scoped)
+   - Does NOT affect admin pages (they don't use theme classes)
+   ========================================================= */
+
+body.theme-app,
+body.theme-auth {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1200px 500px at 20% 10%, rgba(0, 160, 255, 0.25), transparent 60%),
+              radial-gradient(900px 450px at 90% 20%, rgba(130, 90, 255, 0.22), transparent 55%),
+              radial-gradient(1000px 600px at 50% 90%, rgba(0, 220, 180, 0.18), transparent 55%),
+              #070A16;
+  color: #EAF0FF;
+  min-height: 100vh;
+}
+
+/* Topbar */
+.theme-app .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(7, 10, 22, 0.72);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.theme-app .topbar__inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.theme-app .topbar__brand {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.theme-app .topbar__logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 10px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  background: linear-gradient(135deg, rgba(0,160,255,0.25), rgba(130,90,255,0.25));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.theme-app .topbar__brandText {
+  font-weight: 700;
+  opacity: 0.95;
+}
+
+.theme-app .topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.theme-app .ui-link {
+  color: rgba(234,240,255,0.9);
+  text-decoration: none;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 10px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.theme-app .ui-link:hover {
+  background: rgba(255,255,255,0.08);
+  color: #ffffff;
+}
+
+.theme-app .ui-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  font-size: 13px;
+}
+
+.theme-app .ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: #EAF0FF;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.theme-app .ui-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.10);
+  border-color: rgba(255,255,255,0.22);
+}
+.theme-app .ui-btn--primary {
+  border: none;
+  background: linear-gradient(135deg, #00A0FF, #825AFF);
+  box-shadow: 0 10px 30px rgba(0,160,255,0.14);
+}
+.theme-app .ui-btn--primary:hover {
+  background: linear-gradient(135deg, #14B0FF, #926BFF);
+}
+.theme-app .ui-btn--ghost {
+  background: transparent;
+}
+
+/* Main app container */
+.theme-app .app {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  width: min(92vw, 720px);
+  margin: 28px auto 40px;
+  padding: 26px 22px;
+}
+
+.theme-app .app h1,
+.theme-app #welcome-screen h1 {
+  color: #EAF0FF;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  padding-bottom: 14px;
+}
+
+.theme-app .welcome-text {
+  color: rgba(234,240,255,0.82);
+}
+
+.theme-app .stake-info,
+.theme-app #stake-info-details,
+.theme-app #free-access-entry {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: rgba(234,240,255,0.9);
+  border-left: none;
+}
+
+/* Make reward text highly readable on dark background */
+.theme-app #stake-info-details p,
+.theme-app #stake-info-details li {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.theme-app #discount-notice {
+  margin: 12px 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(0, 220, 180, 0.12);
+  border: 1px solid rgba(0, 220, 180, 0.24);
+  color: rgba(234,240,255,0.95);
+  font-weight: 700;
+}
+
+.theme-app #stake-amount,
+.theme-app #access-code-input,
+.theme-app #payment-form input,
+.theme-app #payout-form input,
+.theme-app #payout-form select {
+  background: rgba(7,10,22,0.65);
+  color: #EAF0FF;
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow: none;
+  border-radius: 12px;
+}
+
+/* Stake label on dark background */
+.theme-app #stake-amount-container label {
+  color: #EAF0FF;
+  font-weight: 700;
+}
+
+.theme-app #stake-amount:focus,
+.theme-app #access-code-input:focus,
+.theme-app #payment-form input:focus,
+.theme-app #payout-form input:focus,
+.theme-app #payout-form select:focus {
+  outline: none;
+  border-color: rgba(0,160,255,0.55);
+  box-shadow: 0 0 0 3px rgba(0,160,255,0.18);
+}
+
+/* Access code row: input + Start Quiz button */
+.theme-app #free-access-entry {
+  padding: 10px 0 0;
+  background: transparent;
+  border: none;
+}
+
+.theme-app #access-code-input {
+  width: 68%;
+  max-width: 260px;
+  padding: 10px 12px;
+  margin-right: 6px;
+}
+
+.theme-app #redeem-code-btn {
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.theme-app .stake-btn,
+.theme-app #pay-now-btn,
+.theme-app #next-btn,
+.theme-app #view-leaderboard-btn,
+.theme-app #redeem-code-btn {
+  background: linear-gradient(135deg, #00A0FF, #825AFF);
+  border: none;
+  box-shadow: 0 12px 34px rgba(0,160,255,0.18);
+}
+
+.theme-app .stake-btn:hover,
+.theme-app #pay-now-btn:hover,
+.theme-app #next-btn:hover,
+.theme-app #view-leaderboard-btn:hover,
+.theme-app #redeem-code-btn:hover {
+  background: linear-gradient(135deg, #14B0FF, #926BFF);
+}
+
+/* View leaderboard button specific tweaks */
+.theme-app #view-leaderboard-btn {
+  min-width: 190px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.theme-app #user-leaderboard-panel {
+  background: rgba(7,10,22,0.96) !important;
+  color: #EAF0FF;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.theme-app #user-leaderboard-panel h3,
+.theme-app #user-leaderboard-panel h4 {
+  color: #EAF0FF !important;
+}
+
+/* Auth pages */
+.theme-auth .auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px 14px;
+}
+
+.theme-auth .auth-card {
+  width: min(92vw, 520px);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.38);
+  border-radius: 18px;
+  padding: 22px;
+  backdrop-filter: blur(10px);
+}
+
+.theme-auth .auth-brand {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.theme-auth .auth-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  background: linear-gradient(135deg, #00A0FF, #825AFF);
+}
+
+.theme-auth .auth-logo--alt {
+  background: linear-gradient(135deg, #00DCB4, #00A0FF);
+}
+
+.theme-auth .auth-title {
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.theme-auth .auth-subtitle {
+  color: rgba(234,240,255,0.78);
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+.theme-auth .auth-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.theme-auth .field__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(234,240,255,0.82);
+  margin-bottom: 6px;
+}
+
+.theme-auth .field__input {
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(7,10,22,0.55);
+  color: #EAF0FF;
+}
+
+.theme-auth .field__input:focus {
+  outline: none;
+  border-color: rgba(0,160,255,0.55);
+  box-shadow: 0 0 0 3px rgba(0,160,255,0.18);
+}
+
+.theme-auth .field__hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(234,240,255,0.62);
+}
+
+.theme-auth .auth-btn {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #00A0FF, #825AFF);
+  color: #EAF0FF;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 12px 34px rgba(0,160,255,0.18);
+}
+
+.theme-auth .auth-btn:hover {
+  background: linear-gradient(135deg, #14B0FF, #926BFF);
+}
+
+.theme-auth .auth-footer {
+  margin-top: 14px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  color: rgba(234,240,255,0.70);
+  font-size: 13px;
+}
+
+.theme-auth .auth-link {
+  color: #EAF0FF;
+  font-weight: 800;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(234,240,255,0.35);
+}
+
+.theme-auth .auth-link:hover {
+  border-bottom-color: rgba(234,240,255,0.70);
+}
+
+.theme-auth .auth-message {
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  margin-top: 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.theme-auth .auth-message--error {
+  background: rgba(255, 80, 120, 0.14);
+  border-color: rgba(255, 80, 120, 0.26);
+}
+
+.theme-auth .auth-message--success {
+  background: rgba(0, 220, 180, 0.14);
+  border-color: rgba(0, 220, 180, 0.26);
+}

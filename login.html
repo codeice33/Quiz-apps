@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login · Quiz Challenge</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="auto-logout.js"></script>
+</head>
+<body class="theme-auth">
+    <div class="auth-shell">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <div class="auth-logo">QA</div>
+                <div>
+                    <div class="auth-title">Welcome back</div>
+                    <div class="auth-subtitle">Log in to access the quiz.</div>
+                </div>
+            </div>
+
+            <div id="auth-message" class="auth-message" style="display:none;"></div>
+
+            <form id="login-form" class="auth-form" novalidate>
+                <label class="field">
+                    <span class="field__label">Email</span>
+                    <input class="field__input" id="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+                </label>
+
+                <label class="field">
+                    <span class="field__label">Password</span>
+                    <input class="field__input" id="password" type="password" autocomplete="current-password" placeholder="Your password" required />
+                </label>
+
+                <button class="auth-btn" type="submit">Login</button>
+            </form>
+
+            <div class="auth-footer">
+                <span>New here?</span>
+                <a class="auth-link" href="signup.html">Create an account</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="./auth.js"></script>
+    <script>
+        (function () {
+            const form = document.getElementById('login-form');
+            const msg = document.getElementById('auth-message');
+
+            function show(type, text) {
+                msg.className = 'auth-message auth-message--' + type;
+                msg.textContent = text;
+                msg.style.display = 'block';
+            }
+
+            // If already logged in, go to app
+            const existing = window.Auth && Auth.getCurrentUser && Auth.getCurrentUser();
+            if (existing && existing.email) {
+                window.location.replace('index.html');
+                return;
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                msg.style.display = 'none';
+
+                const email = (document.getElementById('email').value || '').trim().toLowerCase();
+                const password = document.getElementById('password').value || '';
+
+                if (!email || !password) {
+                    show('error', 'Please enter your email and password.');
+                    return;
+                }
+
+                const users = Auth.getUsers();
+                const user = users.find((u) => u && (u.email || '').toLowerCase() === email);
+                if (!user || user.password !== password) {
+                    show('error', 'Invalid email or password.');
+                    return;
+                }
+
+                Auth.setCurrentUser({ email: user.email, name: user.name || user.email, loginTime: Date.now() });
+                show('success', 'Login successful. Redirecting…');
+
+                const redirect = localStorage.getItem('postLoginRedirect') || 'index.html';
+                localStorage.removeItem('postLoginRedirect');
+                setTimeout(() => window.location.replace(redirect), 600);
+            });
+        })();
+    </script>
+</body>
+</html>
+

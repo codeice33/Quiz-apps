@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign up · Quiz Challenge</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+<body class="theme-auth">
+    <div class="auth-shell">
+        <div class="auth-card">
+            <div class="auth-brand">
+                <div class="auth-logo auth-logo--alt">QC</div>
+                <div>
+                    <div class="auth-title">Create your account</div>
+                    <div class="auth-subtitle">Sign up to access the quiz.</div>
+                </div>
+            </div>
+
+            <div id="auth-message" class="auth-message" style="display:none;"></div>
+
+            <form id="signup-form" class="auth-form" novalidate>
+                <label class="field">
+                    <span class="field__label">Full name</span>
+                    <input class="field__input" id="name" type="text" autocomplete="name" placeholder="Your name" required />
+                </label>
+
+                <label class="field">
+                    <span class="field__label">Email</span>
+                    <input class="field__input" id="email" type="email" autocomplete="email" placeholder="you@example.com" required />
+                </label>
+
+                <label class="field">
+                    <span class="field__label">Phone</span>
+                    <input class="field__input" id="phone" type="tel" autocomplete="tel" placeholder="+234…" required />
+                </label>
+
+                <label class="field">
+                    <span class="field__label">Password</span>
+                    <input class="field__input" id="password" type="password" autocomplete="new-password" placeholder="Min 6 characters" required />
+                    <span class="field__hint">Password must be at least 6 characters.</span>
+                </label>
+
+                <label class="field">
+                    <span class="field__label">Confirm password</span>
+                    <input class="field__input" id="confirm" type="password" autocomplete="new-password" placeholder="Re-enter password" required />
+                </label>
+
+                <button class="auth-btn" type="submit">Create account</button>
+            </form>
+
+            <div class="auth-footer">
+                <span>Already have an account?</span>
+                <a class="auth-link" href="login.html">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="./auth.js"></script>
+    <script>
+        (function () {
+            const form = document.getElementById('signup-form');
+            const msg = document.getElementById('auth-message');
+
+            function show(type, text) {
+                msg.className = 'auth-message auth-message--' + type;
+                msg.textContent = text;
+                msg.style.display = 'block';
+            }
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                msg.style.display = 'none';
+
+                const name = (document.getElementById('name').value || '').trim();
+                const email = (document.getElementById('email').value || '').trim().toLowerCase();
+                const phone = (document.getElementById('phone').value || '').trim();
+                const password = document.getElementById('password').value || '';
+                const confirm = document.getElementById('confirm').value || '';
+
+                if (!name || !email || !phone || !password || !confirm) {
+                    show('error', 'Please fill in all fields.');
+                    return;
+                }
+                if (password.length < 6) {
+                    show('error', 'Password must be at least 6 characters.');
+                    return;
+                }
+                if (password !== confirm) {
+                    show('error', 'Passwords do not match.');
+                    return;
+                }
+
+                const users = Auth.getUsers();
+                if (users.some((u) => u && (u.email || '').toLowerCase() === email)) {
+                    show('error', 'That email is already registered. Please login.');
+                    return;
+                }
+
+                users.push({ name, email, phone, password, createdAt: Date.now() });
+                Auth.setUsers(users);
+                Auth.setCurrentUser({ email, name, loginTime: Date.now() });
+                show('success', 'Account created. Redirecting…');
+
+                const redirect = localStorage.getItem('postLoginRedirect') || 'index.html';
+                localStorage.removeItem('postLoginRedirect');
+                setTimeout(() => window.location.replace(redirect), 700);
+            });
+        })();
+    </script>
+</body>
+</html>
+

@@ -14,6 +14,22 @@ let userId = ''; // Unique ID for each user
 let stakeAmount = 500; // Default stake amount in Naira
 let isAdminMode = false;
 let adminCode = 'quiz2024admin'; // Admin code - DO NOT CHANGE THIS VALUE
+let paidAmountNaira = 0; // Tracks last paid amount after 20% discount
+
+// Time-bound discount configuration
+const DISCOUNT_PERCENT = 20; // 20% off
+// Set the campaign start and end (UTC). Adjust dates as needed.
+const DISCOUNT_START_UTC = new Date('2026-02-10T00:00:00Z').getTime();
+const DISCOUNT_END_UTC = new Date('2026-03-10T00:00:00Z').getTime();
+
+function isDiscountActive() {
+    const now = Date.now();
+    return now >= DISCOUNT_START_UTC && now < DISCOUNT_END_UTC;
+}
+
+function applyDiscount(amount) {
+    return Math.round(amount * (100 - DISCOUNT_PERCENT) / 100);
+}
 
 // Store access codes in local storage
 const accessCodes = JSON.parse(localStorage.getItem('quizAccessCodes')) || {};
@@ -37,6 +53,26 @@ const paymentName = document.getElementById('payment-name');
 const paymentEmail = document.getElementById('payment-email');
 const paymentPhone = document.getElementById('payment-phone');
 const payNowBtn = document.getElementById('pay-now-btn');
+
+const discountNotice = document.getElementById('discount-notice');
+const discountEndDateEl = document.getElementById('discount-end-date');
+const discountPercentEl = document.getElementById('discount-percent');
+
+function updateDiscountNotice() {
+    if (!discountNotice) return;
+    if (isDiscountActive()) {
+        if (discountPercentEl) discountPercentEl.textContent = DISCOUNT_PERCENT;
+        if (discountEndDateEl) {
+            const end = new Date(DISCOUNT_END_UTC);
+            discountEndDateEl.textContent = end.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        discountNotice.style.display = 'block';
+    } else {
+        discountNotice.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', updateDiscountNotice);
 
 // Function to handle cheating prevention
 function handleCheating() {
@@ -91,7 +127,7 @@ stakeAmountInput.addEventListener('input', () => {
     let amount = parseInt(stakeAmountInput.value);
     if (isNaN(amount) || amount < 100) {
         amount = 100;
-        stakeAmountInput.value = 100;
+        
     }
     
     // Update the global stake amount
@@ -318,8 +354,12 @@ stakeBtn.addEventListener('click', () => {
     // Update display in the payment form
     stakeAmountDisplay.textContent = `₦${stakeAmount}`;
     
-    // Update pay now button text
-    payNowBtn.textContent = `Pay ₦${stakeAmount} Now`;
+    // Update pay now button text (apply time-bound discount if active)
+    const toPay = isDiscountActive() ? applyDiscount(stakeAmount) : stakeAmount;
+    paidAmountNaira = toPay;
+    payNowBtn.textContent = isDiscountActive()
+        ? `Pay ₦${toPay} Now (${DISCOUNT_PERCENT}% off)`
+        : `Pay ₦${toPay} Now`;
     
     // Show payment form
     welcomeScreen.style.display = 'none';
@@ -338,8 +378,10 @@ payNowBtn.addEventListener('click', () => {
         return;
     }
     
-    // Initialize Paystack payment with custom stake amount
-    const paymentAmount = stakeAmount * 100; // Convert to kobo
+    // Initialize Paystack payment with time-bound discount if active
+    const paidAmount = isDiscountActive() ? applyDiscount(stakeAmount) : stakeAmount;
+    paidAmountNaira = paidAmount; // Save globally for later use
+    const paymentAmount = paidAmount * 100; // Convert to kobo
     
     let handler = PaystackPop.setup({
         key: 'pk_live_a581d155aa9a69f12752b2d23e10ad8741191985', // Your Paystack public key
@@ -415,8 +457,8 @@ function verifyPayment(reference) {
         // Start the quiz
         startQuiz();
         
-        // Show success message with stake amount
-        alert(`Payment of ₦${stakeAmount} successful! The quiz will now begin. Answer correctly to win up to ₦${stakeAmount * 10}!`);
+        // Show success message with paid amount, reward based on original stake
+        alert(`Payment of ₦${paidAmountNaira} successful! The quiz will now begin. Answer correctly to win up to ₦${stakeAmount * 10}!`);
         
         // Still try to verify with our server in the background (for record-keeping)
         let apiUrl = ONLINE_BACKEND + '/verify-payment';
@@ -427,7 +469,8 @@ function verifyPayment(reference) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
                 reference,
-                amount: stakeAmount,
+                amount: paidAmountNaira, // amount actually paid after discount
+                originalStake: stakeAmount, // original stake used for rewards/difficulty
                 email: userEmail,
                 name: userName
             })
@@ -645,6 +688,10 @@ const easyQuestions = [
     { question: "Which country is known as the Land of the Rising Sun?", answers: [ { text: "Japan", correct: true }, { text: "China", correct: false }, { text: "Thailand", correct: false }, { text: "India", correct: false } ] },
 ];
 
+
+
+
+
 // Select questions based on stake amount
 function getQuestionsForStake(stake) {
     if (stake < 5000) return shuffleArray(hardQuestions).slice(0, 70);
@@ -716,6 +763,7 @@ function startQuiz(){
         if (currentQuestionIndex >= 5) {
             enableAntiCheating();
         }
+        
     }, 10000); // 10 second delay
 }
 

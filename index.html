@@ -3,14 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz App</title>
+    <title>QuizApp</title>
     <link rel="stylesheet" href="./style.css">
+    <script src="auto-logout.js"></script>      
 </head>
-<body>
+<body class="theme-app">
+    <nav class="topbar">
+        <div class="topbar__inner">
+            <div class="topbar__brand">
+                <span class="topbar__logo"><a href="index.html">Quiz <style>a { text-decoration: none; color: inherit; }</style></a></span>
+                <span class="topbar__brandText">App</span>
+            </div>
+
+            <div class="topbar__actions">
+                <span class="ui-chip" data-auth="user" style="display:none;">
+                    Signed in as <strong data-auth="user-name"></strong>
+                </span>
+
+                <a class="ui-link" href="login.html" data-auth="login-link" style="display:none;">Login</a>
+                <a class="ui-btn ui-btn--primary" href="signup.html" data-auth="signup-link" style="display:none;">Sign up</a>
+                <button class="ui-btn ui-btn--ghost" type="button" data-auth="logout-btn" style="display:none;">Logout</button>
+            </div>
+        </div>
+    </nav>
 
     <div class="app">
         <div id="welcome-screen">
             <h1>Welcome to the Quiz Challenge</h1>
+            <!-- Time-limited discount notice -->
+            <div id="discount-notice" style="display:none;">
+                Limited-time offer: <span id="discount-percent">20</span>% off your stake! Ends <span id="discount-end-date"></span>.
+            </div>
             <p class="welcome-text">Test your knowledge and win rewards!</p>
             <p class="stake-info">Stake any amount from ₦100 and win up to 10x your stake if you answer all questions correctly.</p>
             
@@ -34,9 +57,9 @@
             
             <!-- Free Access Code Entry -->
             <div id="free-access-entry" style="margin-top: 15px; text-align: center;">
-                <p style="margin-bottom: 5px; font-size: 14px; color: #666;">Have an access code?</p>
-                <input type="text" id="access-code-input" placeholder="Enter access code" style="width: 70%; padding: 8px; margin-right: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                <button id="redeem-code-btn" style="background: #001e4d; color: #fff; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Start Quiz</button>
+                <p style="margin-bottom: 5px; font-size: 14px;">Have an access code?</p>
+                <input type="text" id="access-code-input" placeholder="Enter access code">
+                <button id="redeem-code-btn">Start Quiz</button>
                 
             </div>
             
@@ -52,7 +75,7 @@
             
             <!-- User Leaderboard Button -->
             <div style="text-align:center;margin-top:18px;">
-                <button id="view-leaderboard-btn" style="background:#001e4d;color:#fff;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;font-weight:700;">View Leaderboard</button>
+                <button id="view-leaderboard-btn">View Leaderboard</button>
             </div>
         </div>
 
@@ -67,7 +90,7 @@
         
         <div id="quiz-container" style="display:none;">
             <h1>Simple Quiz</h1>
-            <div id="user-status-info" style="display:none; background: #e9f7ef; border: 1px solid #28a745; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: center;">
+            <div id="user-status-info" style="display:none; background: #000000; border: 1px solid #28a745; border-radius: 5px; padding: 10px; margin-bottom: 15px; text-align: center;">
                 <span id="user-status-text"></span>
             </div>
             <div class="quiz"></div>
@@ -111,24 +134,24 @@
         </div>
     </div>
     
+    <script src="./auth.js"></script>
     <!-- Paystack Inline Script -->
     <script src="https://js.paystack.co/v1/inline.js"></script>
-
     <script src="./script.js"></script>
     
     <!-- User Leaderboard Modal/Panel -->
-    <div id="user-leaderboard-panel" style="display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:92%;max-width:820px;background:#fff;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.2);z-index:2000;padding:20px;">
+    <div id="user-leaderboard-panel" style="display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:92%;max-width:820px;background:#000000;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.2);z-index:2000;padding:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <h3 style="margin:0;color:#001e4d;">Leaderboard</h3>
             <button id="close-leaderboard-btn" style="background:none;border:0;font-size:22px;cursor:pointer;">×</button>
         </div>
         <div style="display:flex;gap:18px;flex-wrap:wrap;">
-            <div style="flex:1;min-width:260px;background:#f8f9fa;padding:12px;border-radius:8px;">
-                <h4 style="margin-top:0;color:#333;">Top Scorers</h4>
+            <div style="flex:1;min-width:260px;background:#000000;padding:12px;border-radius:8px;">
+                <h4 style="margin-top:0;color:#05000f;">Top Scorers</h4>
                 <ul id="user-leaderboard-top" style="list-style:none;padding:0;margin:0;max-height:320px;overflow:auto;"></ul>
             </div>
-            <div style="flex:1;min-width:260px;background:#f8f9fa;padding:12px;border-radius:8px;">
-                <h4 style="margin-top:0;color:#333;">Biggest Winners</h4>
+            <div style="flex:1;min-width:260px;background:#000000;padding:12px;border-radius:8px;">
+                <h4 style="margin-top:0;color:#000000;">Biggest Winners</h4>
                 <ul id="user-leaderboard-winners" style="list-style:none;padding:0;margin:0;max-height:320px;overflow:auto;"></ul>
             </div>
         </div>
@@ -204,12 +227,12 @@
                 flex: 1;
                 padding: 15px;
                 overflow-y: auto;
-                background: #f8f9fa;
+                background: #ffffff;
                 font-size: 14px;
                 line-height: 1.4;
             ">
                 <div class="ai-message" style="
-                    background: white;
+                    background: rgb(0, 0, 0);
                     padding: 12px;
                     border-radius: 10px;
                     margin-bottom: 10px;
@@ -220,10 +243,10 @@
             </div>
             
             <!-- Quick Help Buttons -->
-            <div style="padding: 10px; background: white; border-top: 1px solid #e0e0e0;">
+            <div style="padding: 10px; background: rgb(255, 255, 255); border-top: 1px solid #ffffff;">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
                     <button class="quick-help-btn" data-topic="payment" style="
-                        background: #f0f8ff;
+                        background: #ffffff;
                         border: 1px solid #001e4d;
                         color: #001e4d;
                         padding: 8px;
